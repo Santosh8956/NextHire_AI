@@ -71,7 +71,7 @@ GEMINI_API_KEY=your_google_gemini_api_key_here
 
 ## 👨‍💻 Author
 
-**Santosh Kolagani**  
+**Santosh Kumar Kolagani**  
 *B.Tech - Computer Science & Engineering (Data Science)*  
 *GIET College of Engineering*  
-Academic Major Project: **NextHire AI**
+AI Based Project: **NextHire AI**
