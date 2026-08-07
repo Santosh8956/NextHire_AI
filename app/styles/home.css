@@ -1,0 +1,175 @@
+/* ==========================================================
+   Project     : NextHire AI
+   File        : home.css
+   Author      : Santosh Kolagani
+
+   Purpose:
+   Global Styles for Landing Page
+   Version : 1.0
+========================================================== */
+
+
+/* ==========================================================
+   GOOGLE FONT
+========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+/* ==========================================================
+   GLOBAL RESET
+========================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#F8FAFC;
+    color:#1E293B;
+}
+
+
+/* ==========================================================
+   STREAMLIT APP
+========================================================== */
+
+.stApp{
+    background:#F8FAFC;
+}
+
+
+/* ==========================================================
+   NAVBAR
+========================================================== */
+
+.navbar{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 60px;
+
+    background:rgba(255,255,255,0.80);
+
+    backdrop-filter:blur(14px);
+
+    -webkit-backdrop-filter:blur(14px);
+
+    border-bottom:1px solid #E2E8F0;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:999;
+
+    transition:0.3s ease;
+
+}
+
+
+/* ==========================================================
+   LOGO
+========================================================== */
+
+.navbar-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    color:#2563EB;
+
+}
+
+.navbar-logo span{
+
+    color:#1E293B;
+
+}
+
+
+/* ==========================================================
+   STREAMLIT BUTTONS
+========================================================== */
+
+.stButton>button{
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    transition:0.3s ease;
+
+}
+
+.stButton>button:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/* ==========================================================
+   STREAMLIT RADIO
+========================================================== */
+
+div[role="radiogroup"]{
+
+    justify-content:center;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:992px){
+
+    .navbar{
+
+        flex-direction:column;
+
+        gap:20px;
+
+        padding:20px;
+
+    }
+
+}
+
+@media(max-width:600px){
+
+    .navbar{
+
+        padding:16px;
+
+    }
+
+    .navbar-logo{
+
+        font-size:22px;
+
+    }
+
+}

@@ -1,0 +1,52 @@
+/* =========================================================
+   NextHire AI - Global Modern CSS Theme
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+html, body, [class*="css"]  {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Primary Button Styling */
+.stButton > button {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.stButton > button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* Metric Cards */
+[data-testid="stMetricValue"] {
+    font-weight: 700;
+    color: #1E3A8A;
+}
+
+/* Expander Containers */
+.streamlit-expanderHeader {
+    font-weight: 600;
+    color: #1E293B;
+    background-color: #F8FAFC;
+    border-radius: 8px;
+}
+
+/* Tab Active Highlights */
+button[data-baseweb="tab"] {
+    font-weight: 500;
+    padding: 10px 16px;
+}
+
+button[aria-selected="true"] {
+    color: #2563EB !important;
+    border-bottom-color: #2563EB !important;
+    font-weight: 700 !important;
+}
+
+/* Input Fields */
+input, textarea {
+    border-radius: 6px !important;
+}
