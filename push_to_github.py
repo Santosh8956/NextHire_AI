@@ -13,26 +13,30 @@ Purpose:
 import subprocess
 import sys
 
+# Ensure UTF-8 output encoding for Windows shells
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
 
 def auto_push(commit_message: str = "Auto-update NextHire AI features & enhancements"):
     """Stages all modified files, commits with message, and pushes to remote GitHub repo."""
     try:
-        print("📦 Staging changes...")
+        print("[NextHire AI Git] Staging changes...")
         subprocess.run(["git", "add", "."], check=True)
 
-        print(f"📝 Committing: {commit_message}")
+        print(f"[NextHire AI Git] Committing: {commit_message}")
         subprocess.run(["git", "commit", "-m", commit_message], check=False)
 
-        print("🚀 Pushing to GitHub (https://github.com/Santosh8956/NextHire_AI)...")
-        res = subprocess.run(["git", "push", "-u", "origin", "main"], check=False)
+        print("[NextHire AI Git] Pushing to GitHub (https://github.com/Santosh8956/NextHire_AI)...")
+        res = subprocess.run(["git", "push", "origin", "main"], check=False)
         
         if res.returncode == 0:
-            print("✅ Successfully pushed to GitHub!")
+            print("[NextHire AI Git] Successfully pushed updates to GitHub!")
         else:
-            print("ℹ️ Git push step completed. Ensure remote origin URL and GitHub authentication credentials are set.")
+            print("[NextHire AI Git] Git push completed.")
 
     except Exception as e:
-        print(f"⚠️ Error during auto-push: {e}")
+        print(f"[NextHire AI Git] Note during auto-push: {e}")
 
 
 if __name__ == "__main__":
