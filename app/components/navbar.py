@@ -5,7 +5,7 @@ File        : navbar.py
 Author      : Santosh Kolagani
 
 Purpose:
-    Sleek top navigation bar with glowing developer credit badge for Santosh Kumar Kolagani,
+    Sleek top navigation bar with high-contrast glowing developer credit badge for Santosh Kumar Kolagani,
     section step indicator, and candidate profile badge.
 ===========================================================
 """
@@ -16,7 +16,7 @@ from app.utils.helpers import render_html
 
 def render_navbar():
     """
-    Renders sleek top navigation bar with unique glowing developer credit badge.
+    Renders sleek top navigation bar with high-contrast glowing developer credit badge.
     """
     curr_page = st.session_state.get("current_page", "home")
     user_name = st.session_state.get("user_name", "Candidate")
@@ -43,31 +43,31 @@ def render_navbar():
     curr_step_name = step_labels.get(curr_page, "Dashboard")
 
     # Top Navigation Row
-    c_brand, c_step, c_user = st.columns([2.1, 1.8, 1.6])
+    c_brand, c_step, c_user = st.columns([2.3, 1.7, 1.5])
 
     with c_brand:
-        b1, b2 = st.columns([1, 1.8])
+        b1, b2 = st.columns([1, 1.9])
         with b1:
             if st.button("🚀 NextHire AI", key="nav_logo_home"):
                 st.session_state["current_page"] = "home"
                 st.rerun()
         with b2:
-            # UNIQUE GLOWING DEVELOPER CREDIT BADGE FOR SANTOSH KUMAR KOLAGANI
+            # HIGH-CONTRAST GLOWING CAPSULE DEVELOPER CREDIT BADGE
             render_html(
                 """
-                <div style='padding-top: 4px;'>
-                    <div style='background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #2563EB 100%);
-                                border: 1.5px solid #60A5FA;
-                                box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-                                border-radius: 20px;
-                                padding: 5px 14px;
+                <div style='padding-top: 2px;'>
+                    <div style='background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+                                border: 2px solid #2563EB;
+                                box-shadow: 0 4px 18px rgba(37, 99, 235, 0.4);
+                                border-radius: 25px;
+                                padding: 5px 15px;
                                 display: inline-flex;
                                 align-items: center;
-                                gap: 6px;
-                                color: #F8FAFC;'>
-                        <span style='font-size: 0.9rem;'>✨</span>
-                        <span style='font-size: 0.78rem; font-weight: 700; letter-spacing: 0.3px; color: #FFFFFF;'>
-                            Developed by <b style='color: #60A5FA; text-transform: uppercase;'>Santosh Kumar Kolagani</b>
+                                gap: 8px;
+                                white-space: nowrap;'>
+                        <span style='background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: white; font-weight: bold;'>✨</span>
+                        <span style='font-size: 0.82rem; font-weight: 700; color: #0F172A; letter-spacing: 0.2px;'>
+                            Developed by <b style='color: #2563EB; text-transform: uppercase; font-weight: 800;'>Santosh Kumar Kolagani</b>
                         </span>
                     </div>
                 </div>
@@ -88,8 +88,8 @@ def render_navbar():
         u_str = f"👤 {user_name}" if (user_name and user_name != "Candidate") else "👤 Guest Candidate"
         render_html(
             f"""
-            <div style='text-align: right; padding-top: 6px;'>
-                <span style='background: #F8FAFC; border: 1px solid #CBD5E1; color: #0F172A; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; display: inline-block;'>
+            <div style='text-align: right; padding-top: 4px;'>
+                <span style='background: #F8FAFC; border: 1px solid #CBD5E1; color: #0F172A; padding: 5px 14px; border-radius: 14px; font-size: 0.85rem; font-weight: 700; display: inline-block;'>
                     {u_str}
                 </span>
             </div>
