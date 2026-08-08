@@ -5,8 +5,8 @@ File        : navbar.py
 Author      : Santosh Kolagani
 
 Purpose:
-    Ultra-clean 4-column SaaS top navigation bar with high-contrast glowing developer credit
-    badge for Santosh Kumar Kolagani, zero column overlap, step indicator, and profile badge.
+    Ultra-clean SaaS navigation with high-contrast glowing developer credit badge
+    for Santosh Kumar Kolagani and custom interactive sidebar navigation menu.
 ===========================================================
 """
 
@@ -16,7 +16,8 @@ from app.utils.helpers import render_html
 
 def render_navbar():
     """
-    Renders ultra-clean top navigation bar with non-overlapping developer credit badge.
+    Renders ultra-clean top navigation bar with high-contrast glowing developer credit badge
+    and interactive sidebar navigation controller.
     """
     curr_page = st.session_state.get("current_page", "home")
     user_name = st.session_state.get("user_name", "")
@@ -42,7 +43,60 @@ def render_navbar():
     curr_step_name = step_labels.get(curr_page, "Dashboard")
     display_user = f"👤 {user_name}" if (user_name and user_name.strip()) else "👤 Guest Candidate"
 
-    # Dedicated 4-Column Layout (Zero Merging / Zero Overlap)
+    # ---------------------------------------------------------
+    # CUSTOM INTERACTIVE SIDEBAR NAVIGATION MENU
+    # ---------------------------------------------------------
+    with st.sidebar:
+        render_html(
+            """
+            <div style='background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
+                        border: 1.5px solid #3B82F6;
+                        border-radius: 16px;
+                        padding: 16px;
+                        margin-bottom: 20px;
+                        text-align: center;
+                        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);'>
+                <div style='font-size: 2.2rem; margin-bottom: 4px;'>🚀</div>
+                <h3 style='color: #F8FAFC; margin: 0; font-size: 1.15rem; font-weight: 800;'>NextHire AI</h3>
+                <p style='color: #93C5FD; margin: 2px 0 0 0; font-size: 0.78rem; font-weight: 600;'>AI Career Assistant v2.0</p>
+            </div>
+            """
+        )
+
+        st.markdown("### 🧭 Application Navigation")
+
+        menu_items = [
+            ("🏠 Home & Onboarding", "home"),
+            ("🎯 Target Personalization", "personalization"),
+            ("🎨 Template Gallery", "template_selection"),
+            ("📝 Resume Workspace", "data_collection"),
+            ("✍️ Live Content Editor", "resume_editor"),
+            ("📊 ATS Score Dashboard", "resume_analysis"),
+            ("👁️ Resume Final Preview", "preview"),
+            ("📥 Export & Download PDF", "download"),
+        ]
+
+        for label, page_key in menu_items:
+            is_active = (curr_page == page_key) or (curr_page == f"resume_{page_key}")
+            if st.button(label, key=f"sb_nav_{page_key}", use_container_width=True, type="primary" if is_active else "secondary"):
+                st.session_state["current_page"] = page_key
+                st.rerun()
+
+        st.write("")
+        st.divider()
+
+        render_html(
+            """
+            <div style='background: #0F172A; border: 1px solid #334155; border-radius: 12px; padding: 12px; text-align: center; color: white;'>
+                <p style='margin: 0; font-size: 0.75rem; color: #94A3B8;'>Architected & Developed by</p>
+                <p style='margin: 2px 0 0 0; font-size: 0.85rem; font-weight: 800; color: #60A5FA;'>Santosh Kumar Kolagani</p>
+            </div>
+            """
+        )
+
+    # ---------------------------------------------------------
+    # TOP HEADER NAVIGATION BAR
+    # ---------------------------------------------------------
     c_logo, c_dev, c_step, c_user = st.columns([1.1, 2.6, 1.8, 1.5])
 
     with c_logo:
