@@ -6,7 +6,7 @@ Author      : Santosh Kolagani
 
 Purpose:
     ATS Resume Strength Evaluation Dashboard with Interactive Direct
-    Redirection and Inline "Preview Resume Final Look" Feature.
+    Redirection, Return to Preview Hub, and Return to Workspace Edit options.
 ===========================================================
 """
 
@@ -16,6 +16,7 @@ from app.services.analyzer.resume_analyzer import analyze_resume_strength
 from app.config.settings import get_api_key
 from app.utils.image_generator import generate_template_preview_image
 from app.config.constants import TEMPLATES
+from app.utils.helpers import render_html
 
 
 def show_resume_analysis():
@@ -46,14 +47,13 @@ def show_resume_analysis():
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         color = "#16A34A" if overall >= 80 else ("#D97706" if overall >= 65 else "#DC2626")
-        st.markdown(
+        render_html(
             f"""
             <div style='background: #0F172A; border: 2px solid {color}; padding: 16px; border-radius: 12px; text-align: center; color: white;'>
                 <h3 style='color: #94A3B8; font-size: 0.85rem; margin: 0;'>OVERALL RESUME SCORE</h3>
                 <h1 style='color: {color}; font-size: 2.8rem; margin: 5px 0;'>{overall} / 100</h1>
             </div>
-            """,
-            unsafe_allow_html=True
+            """
         )
     with c2:
         st.metric("ATS Compatibility", f"{ats}%")
@@ -74,7 +74,7 @@ def show_resume_analysis():
             selected_template = "ats_1"
         t_info = TEMPLATES.get(selected_template, list(TEMPLATES.values())[0])
 
-        st.markdown(
+        render_html(
             f"""
             <div style='background-color: #0F172A; border: 2px solid {t_info.get("color", "#2563EB")}; padding: 18px; border-radius: 12px; margin-bottom: 20px; color: white;'>
                 <div style='display: flex; justify-content: space-between; align-items: center;'>
@@ -84,8 +84,7 @@ def show_resume_analysis():
                     </span>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True
+            """
         )
 
         try:
@@ -112,26 +111,24 @@ def show_resume_analysis():
     with col_l:
         st.markdown("### ✅ Resume Strengths")
         for s in analysis.get("strengths", []):
-            st.markdown(
+            render_html(
                 f"""
                 <div style='background: #F0FDF4; border-left: 4px solid #16A34A; padding: 12px; border-radius: 6px; margin-bottom: 10px; color: #166534;'>
                     ✔️ <b>{s}</b>
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
 
         st.markdown("### 🔑 Missing Job Keywords")
         keywords = analysis.get("missing_keywords", [])
         if keywords:
             for kw in keywords:
-                st.markdown(
+                render_html(
                     f"""
                     <div style='background: #FFFBEB; border-left: 4px solid #D97706; padding: 10px; border-radius: 6px; margin-bottom: 8px; color: #92400E;'>
                         ⚠️ Missing Target Keyword: <b>{kw}</b>
                     </div>
-                    """,
-                    unsafe_allow_html=True
+                    """
                 )
         else:
             st.info("No critical missing keywords detected!")
@@ -149,7 +146,7 @@ def show_resume_analysis():
         else:
             for idx, imp in enumerate(improvements):
                 with st.container():
-                    st.markdown(
+                    render_html(
                         f"""
                         <div style='background: #FEF2F2; border-left: 4px solid #DC2626; padding: 12px 16px; border-radius: 8px 8px 0 0; margin-top: 10px;'>
                             <div style='display: flex; justify-content: space-between; align-items: center;'>
@@ -158,8 +155,7 @@ def show_resume_analysis():
                             </div>
                             <p style='color: #7F1D1D; font-size: 0.85rem; margin-top: 6px; margin-bottom: 0;'>💡 <i>{imp.get('recommendation')}</i></p>
                         </div>
-                        """,
-                        unsafe_allow_html=True
+                        """
                     )
                     
                     btn_label = imp.get("button_label", "➡️ Fix Issue in Editor")
@@ -167,6 +163,7 @@ def show_resume_analysis():
                     focus_sec = imp.get("editor_focus", "summary")
 
                     if st.button(btn_label, key=f"fix_btn_{idx}", use_container_width=True, type="primary"):
+                        st.session_state["return_to_page"] = "resume_analysis"
                         st.session_state["current_page"] = target_p
                         st.session_state["editor_focus"] = focus_sec
                         st.rerun()
@@ -176,20 +173,26 @@ def show_resume_analysis():
     st.write("")
     st.divider()
 
-    # Bottom Navigation Action Bar with Preview Resume Final Look Button
-    col_nav1, col_nav2, col_nav3 = st.columns([1.2, 1.5, 1.5])
+    # Bottom Navigation Action Bar with BOTH Return to Final Preview Hub and Return to Workspace Edit options
+    col_nav1, col_nav2, col_nav3, col_nav4 = st.columns([1.2, 1.2, 1.3, 1.3])
 
     with col_nav1:
-        if st.button("⬅️ Back to Editor", use_container_width=True):
-            st.session_state["current_page"] = "resume_editor"
+        if st.button("⬅️ Return to Final Preview Hub", use_container_width=True):
+            ret_p = st.session_state.pop("return_to_page", "preview")
+            st.session_state["current_page"] = ret_p
             st.rerun()
 
     with col_nav2:
+        if st.button("✍️ Return to Workspace Edit", use_container_width=True):
+            st.session_state["current_page"] = "data_collection"
+            st.rerun()
+
+    with col_nav3:
         if st.button("👁️ Preview Resume Final Look", use_container_width=True):
             st.session_state["show_analysis_preview"] = not st.session_state.get("show_analysis_preview", False)
             st.rerun()
 
-    with col_nav3:
+    with col_nav4:
         if st.button("Proceed to Download PDF 📥", type="primary", use_container_width=True):
             st.session_state["current_page"] = "download"
             st.rerun()

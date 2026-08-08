@@ -5,7 +5,8 @@ File        : main.py
 Author      : Santosh Kolagani
 
 Purpose:
-    Entry point of the NextHire AI application.
+    Entry point of the NextHire AI application supporting sequential
+    step-by-step wizard navigation and user authentication portal.
 ===========================================================
 """
 
@@ -20,9 +21,18 @@ if str(ROOT_DIR) not in sys.path:
 import streamlit as st
 
 # Page Imports
+from app.pages.auth import show_auth
 from app.pages.home import show_home
-from app.pages.data_collection import show_data_collection
+from app.pages.welcome import show_ai_welcome
+from app.pages.resume_type import show_resume_type
 from app.pages.template_selection import show_template_selection
+from app.pages.personalization import show_personalization
+from app.pages.data_collection import show_data_collection
+from app.pages.review import show_review
+from app.pages.processing import show_ai_processing
+from app.pages.preview import show_resume_preview
+from app.pages.completion import show_completion
+
 from app.pages.resume_editor import show_resume_editor
 from app.pages.resume_analysis import show_resume_analysis
 from app.pages.download import show_download
@@ -31,7 +41,7 @@ from app.config.constants import SAMPLE_RESUME_DATA
 
 # Page Configuration
 st.set_page_config(
-    page_title="NextHire AI - Resume Builder & Analyzer",
+    page_title="NextHire AI - Your AI Career Assistant",
     page_icon="🚀",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -52,8 +62,12 @@ def initialize_session():
     """Initializes session state defaults."""
     defaults = {
         "current_page": "home",
+        "authenticated": False,
+        "user_name": "",
+        "user_email": "",
         "resume_data": SAMPLE_RESUME_DATA.copy(),
-        "selected_template": "ats_classic",
+        "selected_template": "ats_1",
+        "resume_type_choice": "General Resume",
         "api_key": ""
     }
 
@@ -66,12 +80,28 @@ def initialize_session():
 def route():
     page = st.session_state.get("current_page", "home")
 
-    if page == "home":
+    if page == "auth":
+        show_auth()
+    elif page == "home":
         show_home()
-    elif page == "data_collection":
-        show_data_collection()
+    elif page == "welcome":
+        show_ai_welcome()
+    elif page == "resume_type":
+        show_resume_type()
     elif page == "template_selection":
         show_template_selection()
+    elif page == "personalization":
+        show_personalization()
+    elif page == "data_collection":
+        show_data_collection()
+    elif page == "review":
+        show_review()
+    elif page == "ai_processing":
+        show_ai_processing()
+    elif page in ["preview", "resume_preview"]:
+        show_resume_preview()
+    elif page == "completion":
+        show_completion()
     elif page == "resume_editor":
         show_resume_editor()
     elif page == "resume_analysis":

@@ -1,52 +1,98 @@
 /* =========================================================
-   NextHire AI - Global Modern CSS Theme
+   NextHire AI - Ultra HD Modern SaaS CSS Theme
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
-html, body, [class*="css"]  {
-    font-family: 'Inter', sans-serif;
+html, body, [class*="css"] {
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
-/* Primary Button Styling */
+/* Global Container Spacing */
+.block-container {
+    padding-top: 1.5rem !important;
+    padding-bottom: 3rem !important;
+    max-width: 1200px !important;
+}
+
+/* Primary & Secondary Button Styling */
 .stButton > button {
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.2s ease-in-out;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    padding: 0.6rem 1.4rem !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
 }
 
-.stButton > button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+}
+
+.stButton > button[kind="primary"]:hover {
+    transform: translateY(-2px) scale(1.01) !important;
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.5) !important;
+    background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%) !important;
+}
+
+.stButton > button[kind="secondary"] {
+    background: #F1F5F9 !important;
+    color: #1E293B !important;
+    border: 1px solid #CBD5E1 !important;
+}
+
+.stButton > button[kind="secondary"]:hover {
+    background: #E2E8F0 !important;
+    color: #0F172A !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Input Fields & Textareas */
+input[type="text"], input[type="password"], textarea {
+    border-radius: 8px !important;
+    border: 1px solid #CBD5E1 !important;
+    padding: 10px 14px !important;
+    font-size: 0.95rem !important;
+    transition: border-color 0.2s !important;
+}
+
+input[type="text"]:focus, textarea:focus {
+    border-color: #2563EB !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
 }
 
 /* Metric Cards */
 [data-testid="stMetricValue"] {
-    font-weight: 700;
-    color: #1E3A8A;
+    font-weight: 800 !important;
+    color: #1E3A8A !important;
 }
 
 /* Expander Containers */
 .streamlit-expanderHeader {
-    font-weight: 600;
-    color: #1E293B;
-    background-color: #F8FAFC;
-    border-radius: 8px;
+    font-weight: 700 !important;
+    color: #0F172A !important;
+    background-color: #F8FAFC !important;
+    border-radius: 10px !important;
+    border: 1px solid #E2E8F0 !important;
+    padding: 12px 18px !important;
 }
 
 /* Tab Active Highlights */
 button[data-baseweb="tab"] {
-    font-weight: 500;
-    padding: 10px 16px;
+    font-weight: 600 !important;
+    padding: 10px 18px !important;
+    font-size: 0.95rem !important;
 }
 
 button[aria-selected="true"] {
     color: #2563EB !important;
     border-bottom-color: #2563EB !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
 }
 
-/* Input Fields */
-input, textarea {
-    border-radius: 6px !important;
+/* Hide streamlit default header decoration */
+header[data-testid="stHeader"] {
+    background: transparent !important;
 }

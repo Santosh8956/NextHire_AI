@@ -5,134 +5,440 @@ File        : home.py
 Author      : Santosh Kolagani
 
 Purpose:
-    Landing Page with NextHire Smart Resume Import & Feature Showcase.
+    Screen 1 & Dashboard: Welcomes user with Get Started button, unique modern AI Architect name onboarding,
+    General vs Customized selection (redirecting Customized directly to personalization),
+    and unique Dashboard with custom template routing logic.
 ===========================================================
 """
 
 import streamlit as st
 from app.components.navbar import render_navbar
-from app.config.constants import SAMPLE_RESUME_DATA
 from app.services.parser.resume_parser import extract_text_from_pdf, parse_resume_content
+from app.utils.helpers import render_html
 
 
 def show_home():
-    """Renders modern Landing Page."""
+    """Renders Welcome Onboarding Flow & Unique NextHire Dashboard."""
     render_navbar()
 
-    # Hero Section
-    st.markdown(
-        """
-        <div style='text-align: center; padding: 20px 10px;'>
-            <h1 style='font-size: 3rem; color: #1E3A8A;'>Build & Edit ATS-Optimized Resumes with <span style='color: #2563EB;'>NextHire AI</span></h1>
-            <p style='font-size: 1.2rem; color: #4B5563; max-width: 850px; margin: 0 auto;'>
-                NextHire Smart AI Resume Builder: Upload and edit your existing resume (PDF/TXT), generate tailored summaries, enhance experience bullet points with AI, evaluate ATS scores, and export publication-ready PDFs.
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # Onboarding Step State (1: Welcome, 2: Name Prompt, 3: General vs Customized, 4: Dashboard)
+    if "home_step" not in st.session_state:
+        st.session_state["home_step"] = 1
+    if "user_name" not in st.session_state:
+        st.session_state["user_name"] = ""
 
-    st.write("")
+    home_step = st.session_state.get("home_step", 1)
+    user_name = st.session_state.get("user_name", "")
 
-    # NextHire Action Buttons
-    col_a, col_b, col_c = st.columns([1, 3, 1])
-    with col_b:
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            if st.button("🚀 Build New Resume", type="primary", use_container_width=True):
-                st.session_state["current_page"] = "data_collection"
-                st.rerun()
+    # ---------------------------------------------------------
+    # STEP 1: WELCOME TO NEXTHIRE AI & GET STARTED BUTTON
+    # ---------------------------------------------------------
+    if home_step == 1:
+        render_html(
+            """
+            <div style='background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
+                        border: 2px solid #3B82F6;
+                        border-radius: 20px;
+                        padding: 38px 30px;
+                        text-align: center;
+                        color: white;
+                        margin-bottom: 25px;
+                        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);'>
+                <div style='font-size: 3.8rem; margin-bottom: 8px;'>🚀</div>
+                <h1 style='color: #F8FAFC; font-size: 2.8rem; font-weight: 800; margin: 0 0 6px 0;'>Welcome to NextHire AI</h1>
+                <p style='color: #93C5FD; font-size: 1.3rem; font-weight: 600; margin: 0 0 15px 0;'>Your Intelligent AI Career Assistant</p>
+                <p style='color: #E2E8F0; font-size: 1.05rem; max-width: 750px; margin: 0 auto; line-height: 1.6;'>
+                    Craft high-impact, ATS-optimized resumes tailored for top career opportunities using advanced AI content polishing and high-resolution classified templates.
+                </p>
+            </div>
+            """
+        )
+
+        # Feature Highlights Grid (Fixed height & box alignment)
+        f1, f2, f3, f4 = st.columns(4)
+
+        with f1:
+            render_html(
+                """
+                <div style='background: #F0F9FF; border: 1.5px solid #BAE6FD; border-left: 4px solid #0284C7; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
+                    <div style='font-size: 1.8rem; margin-bottom: 6px;'>🎯</div>
+                    <h4 style='color: #0369A1; margin: 0 0 6px 0; font-size: 1.05rem;'>ATS Scoring Engine</h4>
+                    <p style='color: #334155; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Evaluate keyword coverage & ATS compatibility instantly.</p>
+                </div>
+                """
+            )
+
+        with f2:
+            render_html(
+                """
+                <div style='background: #FAF5FF; border: 1.5px solid #E9D5FF; border-left: 4px solid #9333EA; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
+                    <div style='font-size: 1.8rem; margin-bottom: 6px;'>🤖</div>
+                    <h4 style='color: #6B21A8; margin: 0 0 6px 0; font-size: 1.05rem;'>AI Content Polish</h4>
+                    <p style='color: #334155; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Enhance bullet points with action verbs & performance metrics.</p>
+                </div>
+                """
+            )
+
+        with f3:
+            render_html(
+                """
+                <div style='background: #F0FDF4; border: 1.5px solid #BBF7D0; border-left: 4px solid #16A34A; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
+                    <div style='font-size: 1.8rem; margin-bottom: 6px;'>🎨</div>
+                    <h4 style='color: #15803D; margin: 0 0 6px 0; font-size: 1.05rem;'>Signature HD Templates</h4>
+                    <p style='color: #334155; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Classified designs across ATS, Modern, Tech & Executive layouts.</p>
+                </div>
+                """
+            )
+
+        with f4:
+            render_html(
+                """
+                <div style='background: #FFF7ED; border: 1.5px solid #FED7AA; border-left: 4px solid #EA580C; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
+                    <div style='font-size: 1.8rem; margin-bottom: 6px;'>📥</div>
+                    <h4 style='color: #C2410C; margin: 0 0 6px 0; font-size: 1.05rem;'>Instant PDF Export</h4>
+                    <p style='color: #334155; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Publication-ready vector PDF document export in 1-click.</p>
+                </div>
+                """
+            )
+
+        st.write("")
+        st.write("")
+
+        c1, c2, c3 = st.columns([1, 2, 1])
         with c2:
-            if st.button("📄 Edit Existing Resume", use_container_width=True):
-                st.session_state["current_page"] = "data_collection"
-                st.rerun()
-        with c3:
-            if st.button("⚡ Load Sample Data", use_container_width=True):
-                st.session_state["resume_data"] = SAMPLE_RESUME_DATA
-                st.session_state["current_page"] = "data_collection"
-                st.success("Loaded sample profile for Santosh Kolagani!")
+            if st.button("🚀 Get Started", type="primary", use_container_width=True, key="btn_home_get_started"):
+                st.session_state["home_step"] = 2
                 st.rerun()
 
-    # NextHire Smart Feature Box
-    st.write("")
-    with st.expander("⚡ NextHire Smart Feature: Drag & Drop Existing Resume PDF to Edit", expanded=False):
-        uploaded_file = st.file_uploader("Upload PDF/TXT resume to import instantly:", type=["pdf", "txt"], key="home_resume_upload")
-        if uploaded_file is not None:
-            if st.button("🚀 Parse & Launch Editor", type="primary"):
-                with st.spinner("Extracting & parsing resume text..."):
-                    file_bytes = uploaded_file.read()
-                    if uploaded_file.name.endswith(".pdf"):
-                        extracted_text = extract_text_from_pdf(file_bytes)
+    # ---------------------------------------------------------
+    # STEP 2: ULTRA-MODERN CONVERSATIONAL AI RESUME ARCHITECT ONBOARDING
+    # ---------------------------------------------------------
+    elif home_step == 2:
+        render_html(
+            """
+            <div style='background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+                        border: 2px solid #38BDF8;
+                        border-radius: 24px;
+                        padding: 32px 36px;
+                        margin-bottom: 25px;
+                        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);'>
+                <div style='display: flex; align-items: center; gap: 16px; margin-bottom: 20px;'>
+                    <div style='background: linear-gradient(135deg, #2563EB 0%, #0284C7 100%);
+                                width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);'>
+                        🤖
+                    </div>
+                    <div>
+                        <h3 style='margin: 0; color: #F8FAFC; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.3px;'>NextHire AI Resume Architect</h3>
+                        <div style='display: flex; align-items: center; gap: 8px; margin-top: 4px;'>
+                            <span style='background: #16A34A; width: 8px; height: 8px; border-radius: 50%; display: inline-block;'></span>
+                            <span style='color: #4ADE80; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;'>AI Model Active • Personalizing Your Session</span>
+                        </div>
+                    </div>
+                </div>
+                <div style='background: rgba(30, 41, 59, 0.8); border-left: 4px solid #38BDF8; padding: 20px 24px; border-radius: 14px; margin-bottom: 15px;'>
+                    <p style='color: #F1F5F9; font-size: 1.15rem; margin: 0 0 10px 0; line-height: 1.6; font-weight: 500;'>
+                        👋 <b>Welcome!</b> I'm NextHire AI, your personal resume architect and ATS strategy partner.
+                    </p>
+                    <p style='color: #94A3B8; font-size: 1rem; margin: 0; line-height: 1.55;'>
+                        I analyze target job postings, enhance experience bullets with high-impact action metrics, and generate publication-ready 4K ATS vector resumes.
+                        <b>To get started on your personalized resume, what should I call you?</b>
+                    </p>
+                </div>
+            </div>
+            """
+        )
+
+        with st.form("interactive_name_form"):
+            entered_name = st.text_input(
+                "👤 Enter Your Full Name:",
+                value=user_name,
+                placeholder="e.g. Santosh Kumar Kolagani",
+                help="Your name will be placed at the top of your resume and personalized greetings."
+            )
+
+            preview_greeting = entered_name.strip() if entered_name.strip() else "Future Industry Leader"
+            render_html(
+                f"""
+                <div style='background: #F0F9FF; border: 1.5px dashed #0284C7; border-radius: 12px; padding: 12px 18px; margin: 14px 0;'>
+                    <p style='color: #0369A1; font-size: 0.95rem; margin: 0;'>
+                        ✨ Live Greeting Preview: <b>"Welcome aboard, {preview_greeting}! Let's craft your high-impact resume."</b>
+                    </p>
+                </div>
+                """
+            )
+
+            c1, c2 = st.columns([1, 1])
+            with c1:
+                if st.form_submit_button("🚀 Save Name & Start Building ➡️", type="primary", use_container_width=True):
+                    if entered_name.strip():
+                        st.session_state["user_name"] = entered_name.strip()
+                        resume = st.session_state.get("resume_data", {})
+                        personal = resume.setdefault("personal_info", {})
+                        personal["full_name"] = entered_name.strip()
+                        st.session_state["home_step"] = 3
+                        st.rerun()
                     else:
-                        extracted_text = file_bytes.decode("utf-8", errors="ignore")
+                        st.warning("Please enter your name to proceed!")
 
-                    if extracted_text:
-                        parsed = parse_resume_content(extracted_text)
-                        st.session_state["resume_data"] = parsed
+        st.write("")
+        render_html(
+            """
+            <div style='display: flex; justify-content: center; gap: 24px; color: #94A3B8; font-size: 0.88rem;'>
+                <span>🔒 <b>100% Private & Encrypted</b></span>
+                <span>⚡ <b>Instant Setup</b></span>
+                <span>🎯 <b>ATS Tailored</b></span>
+            </div>
+            """
+        )
+
+    # ---------------------------------------------------------
+    # STEP 3: GENERAL RESUME vs CUSTOMIZED RESUME (Direct Personalization Redirection)
+    # ---------------------------------------------------------
+    elif home_step == 3:
+        render_html(
+            f"""
+            <div style='background: #F0FDF4; border-left: 5px solid #16A34A; border-radius: 12px; padding: 22px 25px; margin-bottom: 25px;'>
+                <h3 style='color: #15803D; margin-top: 0; font-size: 1.4rem;'>Nice to meet you, {user_name}! 🚀</h3>
+                <p style='color: #334155; font-size: 1.1rem; margin-bottom: 0;'>
+                    <b>What brings you here today?</b> Please choose what you would like to create:
+                </p>
+            </div>
+            """
+        )
+
+        col_gen, col_cust = st.columns(2)
+
+        with col_gen:
+            render_html(
+                """
+                <div style='background: #FFFFFF; border: 2px solid #2563EB; border-radius: 16px; padding: 25px; text-align: center; height: 100%;'>
+                    <div style='font-size: 3rem; margin-bottom: 10px;'>📄</div>
+                    <h3 style='color: #1E3A8A; margin: 0 0 10px 0;'>General Resume</h3>
+                    <p style='color: #64748B; font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px;'>
+                        Create a versatile, clean resume showcasing your complete skills, education, projects, and career background.
+                    </p>
+                </div>
+                """
+            )
+            st.write("")
+            if st.button("🚀 General Resume", type="primary", use_container_width=True, key="btn_select_general"):
+                st.session_state["resume_type_choice"] = "General Resume"
+                st.session_state["home_step"] = 4
+                st.rerun()
+
+        with col_cust:
+            render_html(
+                """
+                <div style='background: #FFFFFF; border: 2px solid #16A34A; border-radius: 16px; padding: 25px; text-align: center; height: 100%;'>
+                    <div style='font-size: 3rem; margin-bottom: 10px;'>🎯</div>
+                    <h3 style='color: #166534; margin: 0 0 10px 0;'>Customized Resume</h3>
+                    <p style='color: #64748B; font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px;'>
+                        Tailor your resume specifically for a target job role, company, and job description for maximum ATS keyword match.
+                    </p>
+                </div>
+                """
+            )
+            st.write("")
+            if st.button("🎯 Customized Resume", type="primary", use_container_width=True, key="btn_select_customized"):
+                st.session_state["resume_type_choice"] = "Personalized Resume"
+                st.session_state["current_page"] = "personalization"
+                st.rerun()
+
+    # ---------------------------------------------------------
+    # STEP 4: UNIQUE, USER-FRIENDLY DASHBOARD WITH SPECIFIED ROUTING
+    # ---------------------------------------------------------
+    elif home_step == 4:
+        rtype = st.session_state.get("resume_type_choice", "General Resume")
+
+        render_html(
+            f"""
+            <div style='background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
+                        border: 2px solid #3B82F6;
+                        border-radius: 16px;
+                        padding: 24px 28px;
+                        color: white;
+                        margin-bottom: 25px;'>
+                <div style='display: flex; justify-content: space-between; align-items: center;'>
+                    <div>
+                        <h2 style='margin: 0; color: #F8FAFC; font-size: 1.9rem;'>👋 Dashboard — Welcome, {user_name}!</h2>
+                        <p style='margin: 6px 0 0 0; color: #93C5FD; font-size: 1rem;'>
+                            Active Mode: <b>{rtype}</b> | Access all resume features & direct redirections below.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            """
+        )
+
+        # Quick Action Row
+        c_act1, c_act2 = st.columns(2)
+
+        with c_act1:
+            render_html(
+                """
+                <div style='background: #F0F9FF; border: 2px solid #0284C7; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: #0369A1; margin: 0 0 6px 0;'>🚀 Build New Resume</h4>
+                    <p style='color: #334155; font-size: 0.85rem; margin-bottom: 12px;'>Choose a template style first, then proceed directly to details workspace.</p>
+                </div>
+                """
+            )
+            st.write("")
+            if st.button("🚀 Start Building New Resume", type="primary", use_container_width=True, key="dash_btn_new"):
+                st.session_state["from_flow"] = "build_new"
+                st.session_state["current_page"] = "template_selection"
+                st.rerun()
+
+        with c_act2:
+            render_html(
+                """
+                <div style='background: #F0FDF4; border: 2px solid #16A34A; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: #15803D; margin: 0 0 6px 0;'>📄 Edit Existing Resume (Upload PDF/TXT)</h4>
+                    <p style='color: #334155; font-size: 0.85rem; margin-bottom: 12px;'>Upload your resume file to parse and edit details.</p>
+                </div>
+                """
+            )
+            st.write("")
+            uploaded_pdf = st.file_uploader("Upload PDF/TXT file:", type=["pdf", "txt"], key="dash_pdf_upload")
+            if uploaded_pdf is not None:
+                file_bytes = uploaded_pdf.read()
+                if uploaded_pdf.name.endswith(".pdf"):
+                    extracted_text = extract_text_from_pdf(file_bytes)
+                else:
+                    extracted_text = file_bytes.decode("utf-8", errors="ignore")
+
+                if extracted_text:
+                    parsed_data = parse_resume_content(extracted_text)
+                    st.session_state["resume_data"] = parsed_data
+                    st.session_state["edit_resume_parsed"] = True
+                    st.success("🎉 Existing resume parsed successfully!")
+
+            if st.session_state.get("edit_resume_parsed"):
+                render_html(
+                    """
+                    <div style='background: #FFFBEB; border: 1.5px solid #FCD34D; border-radius: 10px; padding: 14px; margin-top: 10px;'>
+                        <p style='color: #92400E; font-weight: 700; margin: 0 0 8px 0; font-size: 0.95rem;'>
+                            💡 How would you like to choose the template style for your imported resume?
+                        </p>
+                    </div>
+                    """
+                )
+                c_tpl_default, c_tpl_select = st.columns(2)
+                with c_tpl_default:
+                    if st.button("📄 Continue with Default Template", use_container_width=True, key="btn_tpl_default"):
+                        st.session_state["selected_template"] = "ats_1"
                         st.session_state["current_page"] = "data_collection"
-                        st.success("Resume imported! Redirecting to editor...")
+                        st.rerun()
+                with c_tpl_select:
+                    if st.button("🎨 Select New Template", type="primary", use_container_width=True, key="btn_tpl_select"):
+                        st.session_state["from_flow"] = "edit_existing"
+                        st.session_state["current_page"] = "template_selection"
                         st.rerun()
 
-    st.divider()
+        st.write("")
+        st.divider()
 
-    # Key Features Section
-    st.markdown("### ✨ Why NextHire AI?")
-    
-    col1, col2, col3, col4 = st.columns(4)
+        # ---------------------------------------------------------
+        # UNIQUE REDIRECTION CARDS GRID (Direct Feature Navigation)
+        # ---------------------------------------------------------
+        st.markdown("### ⚡ Quick Feature Redirections")
+        st.caption("Click any feature card below to navigate directly:")
 
-    with col1:
-        st.markdown(
-            """
-            <div style='background: #F0F9FF; padding: 20px; border-radius: 12px; border-left: 4px solid #0284C7; height: 100%;'>
-                <h4>📄 NextHire Resume Import</h4>
-                <p style='font-size: 0.9rem; color: #334155;'>Upload your existing resume to parse, edit, and re-template without starting from scratch.</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        grid1, grid2, grid3 = st.columns(3)
 
-    with col2:
-        st.markdown(
-            """
-            <div style='background: #F0FDF4; padding: 20px; border-radius: 12px; border-left: 4px solid #16A34A; height: 100%;'>
-                <h4>🎨 Classified Templates</h4>
-                <p style='font-size: 0.9rem; color: #334155;'>Classified templates across ATS Friendly, Modern, Tech, Creative, Executive, and Academic.</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        with grid1:
+            render_html(
+                """
+                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: #1E3A8A; margin: 0 0 6px 0;'>📊 ATS Score & Analysis</h4>
+                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Evaluate ATS compatibility score, formatting checks & missing keywords.</p>
+                </div>
+                """
+            )
+            st.write("")
+            if st.button("📊 View ATS Score & Analysis", use_container_width=True, key="dash_redir_ats"):
+                st.session_state["current_page"] = "resume_analysis"
+                st.rerun()
 
-    with col3:
-        st.markdown(
-            """
-            <div style='background: #FAF5FF; padding: 20px; border-radius: 12px; border-left: 4px solid #9333EA; height: 100%;'>
-                <h4>🤖 AI Content Polish</h4>
-                <p style='font-size: 0.9rem; color: #334155;'>Generate professional summaries and enhance bullet points with action verbs and metrics.</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        with grid2:
+            render_html(
+                """
+                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: #0D9488; margin: 0 0 6px 0;'>✍️ Content Editor & AI Polish</h4>
+                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Side-by-side live editor to enhance bullet points with action verbs.</p>
+                </div>
+                """
+            )
+            st.write("")
+            if st.button("✍️ Open Content Editor", use_container_width=True, key="dash_redir_editor"):
+                st.session_state["current_page"] = "resume_editor"
+                st.rerun()
 
-    with col4:
-        st.markdown(
-            """
-            <div style='background: #FFF7ED; padding: 20px; border-radius: 12px; border-left: 4px solid #EA580C; height: 100%;'>
-                <h4>📊 ATS Scoring & PDF Export</h4>
-                <p style='font-size: 0.9rem; color: #334155;'>Instant keyword check, ATS scoring dashboard, and publication-ready PDF download.</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        with grid3:
+            render_html(
+                """
+                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: #7C3AED; margin: 0 0 6px 0;'>🎨 Signature Template Gallery</h4>
+                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Browse high-resolution preview cards across classified template styles.</p>
+                </div>
+                """
+            )
+            st.write("")
+            if st.button("🎨 Open Template Gallery", use_container_width=True, key="dash_redir_tmpl"):
+                st.session_state["current_page"] = "template_selection"
+                st.rerun()
+
+        st.write("")
+        grid4, grid5, grid6 = st.columns(3)
+
+        with grid4:
+            render_html(
+                """
+                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: #2563EB; margin: 0 0 6px 0;'>📝 Resume Workspace</h4>
+                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Clean workspace sections: Personal, Education, Skills, Projects, Experience.</p>
+                </div>
+                """
+            )
+            st.write("")
+            if st.button("📝 Open Workspace", use_container_width=True, key="dash_redir_ws"):
+                st.session_state["current_page"] = "data_collection"
+                st.rerun()
+
+        with grid5:
+            render_html(
+                """
+                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: #D97706; margin: 0 0 6px 0;'>🎯 Target Job Personalization</h4>
+                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Customize target job role, company name, and job posting requirements.</p>
+                </div>
+                """
+            )
+            st.write("")
+            if st.button("🎯 Target Personalization", use_container_width=True, key="dash_redir_pers"):
+                st.session_state["current_page"] = "personalization"
+                st.rerun()
+
+        with grid6:
+            render_html(
+                """
+                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: #059669; margin: 0 0 6px 0;'>📥 Export PDF Resume</h4>
+                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Inspect final high-resolution document preview and download ATS PDF.</p>
+                </div>
+                """
+            )
+            st.write("")
+            if st.button("📥 Export & Download PDF", use_container_width=True, key="dash_redir_dl"):
+                st.session_state["current_page"] = "download"
+                st.rerun()
 
     st.write("")
     st.divider()
 
-    # Footer banner
-    st.markdown(
+    render_html(
         """
-        <div style='text-align: center; color: #6B7280; font-size: 0.85rem;'>
-            NextHire AI — Designed & Developed by <b>Santosh Kolagani</b> (Academic Major Project)
+        <div style='text-align: center; color: #64748B; font-size: 0.88rem;'>
+            NextHire AI — Designed & Developed by <b>Santosh Kumar Kolagani</b> (Academic Major Project)
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )

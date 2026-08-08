@@ -5,7 +5,7 @@ File        : download.py
 Author      : Santosh Kolagani
 
 Purpose:
-    Final PDF Export & High-Res Document Preview Page.
+    Final PDF Export & High-Res Document Preview Page using render_html.
 ===========================================================
 """
 
@@ -14,6 +14,7 @@ from app.components.navbar import render_navbar
 from app.utils.pdf_generator import generate_resume_pdf
 from app.utils.image_generator import generate_template_preview_image
 from app.config.constants import TEMPLATES
+from app.utils.helpers import render_html
 
 
 def show_download():
@@ -46,11 +47,10 @@ def show_download():
     with col_meta:
         st.markdown("### 💾 Download & Document Summary")
         
-        # Candidate Summary Card
         overall_score = resume.get('analysis', {}).get('overall_score', 90)
         score_color = "#16A34A" if overall_score >= 80 else "#D97706"
 
-        st.markdown(
+        render_html(
             f"""
             <div style='background-color: #0F172A; border: 2px solid {template_info.get("color", "#2563EB")}; padding: 18px; border-radius: 12px; margin-bottom: 20px; color: white;'>
                 <h4 style='margin: 0; color: #F8FAFC;'>📋 Final Document Overview</h4>
@@ -61,11 +61,9 @@ def show_download():
                 <p style='margin-bottom: 6px;'><b style='color: #94A3B8;'>Layout Style:</b> <span style='color: #E2E8F0;'>{template_info.get('layout_style', 'default').replace('_', ' ').title()}</span></p>
                 <p style='margin-bottom: 0px;'><b style='color: #94A3B8;'>ATS Quality Score:</b> <span style='color: {score_color}; font-weight: bold;'>{overall_score} / 100</span></p>
             </div>
-            """,
-            unsafe_allow_html=True
+            """
         )
 
-        # PDF Download Button
         st.markdown("#### ⬇️ Export PDF File")
         try:
             pdf_data = generate_resume_pdf(resume, template_id=selected_template)
@@ -87,7 +85,6 @@ def show_download():
         st.write("")
         st.divider()
 
-        # Action Buttons
         st.markdown("#### 🔄 Quick Modifications")
         c1, c2 = st.columns(2)
         with c1:
@@ -107,7 +104,6 @@ def show_download():
         st.caption("Check the final look, formatting, and layout before sending to recruiters:")
         
         try:
-            # Render Ultra HD 4K image preview
             preview_png = generate_template_preview_image(template_info, resume_data=resume)
             st.image(
                 preview_png,

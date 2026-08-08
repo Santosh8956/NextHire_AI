@@ -5,8 +5,8 @@ File        : data_collection.py
 Author      : Santosh Kolagani
 
 Purpose:
-    Interactive Multi-Tab Data Collection Form with NextHire Smart Feature
-    Existing Resume Import (PDF/TXT) and Profile Editing.
+    Screen 6 – Resume Workspace: Clean, organized workspace with full flexibility to remove
+    any or all Education, Experience, Projects, Skills, and Certification items.
 ===========================================================
 """
 
@@ -16,6 +16,7 @@ from app.config.constants import SAMPLE_RESUME_DATA
 from app.services.generator.resume_generator import generate_summary
 from app.services.parser.resume_parser import extract_text_from_pdf, parse_resume_content
 from app.config.settings import get_api_key
+from app.utils.helpers import render_html
 
 
 def _get_resume():
@@ -25,29 +26,35 @@ def _get_resume():
 
 
 def show_data_collection():
-    """Renders data collection form with NextHire Smart Feature resume upload & 5 structured tabs."""
+    """Renders Screen 6 – Resume Workspace with full item removal flexibility."""
     render_navbar()
 
-    st.markdown("## 📝 Step 1: Candidate Profile & Existing Resume Editor")
-    st.caption("Upload your existing resume (PDF/TXT) to auto-extract details, or fill out/edit your career profile manually.")
+    render_html(
+        """
+        <div style='text-align: center; margin-bottom: 20px;'>
+            <h1 style='color: #1E3A8A; font-size: 2.2rem; font-weight: 700;'>Resume Workspace</h1>
+            <p style='color: #64748B; font-size: 1.05rem;'>Fill out or edit your details. You can add or remove any section items to suit your experience background.</p>
+        </div>
+        """
+    )
 
     # ---------------------------------------------------------
-    # NEXTHIRE SMART FEATURE: Import & Edit Existing Resume
+    # NEXTHIRE SMART FEATURE: Import Existing Resume (PDF/TXT)
     # ---------------------------------------------------------
-    with st.expander("⚡ NextHire Smart Feature: Upload & Import Existing Resume (PDF / TXT)", expanded=True):
+    with st.expander("⚡ NextHire Smart Feature: Import Existing Resume (PDF / TXT)", expanded=False):
         c_up, c_btn = st.columns([3, 1])
         with c_up:
             uploaded_file = st.file_uploader(
-                "Drag & drop your existing resume file here:",
+                "Upload existing resume to auto-fill sections:",
                 type=["pdf", "txt"],
-                help="Supported formats: PDF, TXT. Automatically extracts contact info, summary, experience, education, and skills."
+                key="workspace_resume_upload"
             )
         with c_btn:
             st.write("")
             st.write("")
             if uploaded_file is not None:
-                if st.button("🚀 Parse & Edit Resume", type="primary", use_container_width=True):
-                    with st.spinner("Extracting resume content..."):
+                if st.button("🚀 Parse & Fill", type="primary", use_container_width=True):
+                    with st.spinner("Extracting content..."):
                         file_bytes = uploaded_file.read()
                         if uploaded_file.name.endswith(".pdf"):
                             extracted_text = extract_text_from_pdf(file_bytes)
@@ -57,12 +64,8 @@ def show_data_collection():
                         if extracted_text:
                             parsed_data = parse_resume_content(extracted_text)
                             st.session_state["resume_data"] = parsed_data
-                            st.success("🎉 Existing resume parsed successfully! Profile updated below.")
+                            st.success("🎉 Resume parsed successfully into workspace!")
                             st.rerun()
-                        else:
-                            st.error("Could not extract text from uploaded file. Please verify file content.")
-
-    st.divider()
 
     resume = _get_resume()
     personal = resume.setdefault("personal_info", {})
@@ -73,170 +76,208 @@ def show_data_collection():
     certs = resume.setdefault("certifications", [])
     job_target = resume.setdefault("job_target", {})
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "👤 Personal Info",
-        "🎓 Education",
-        "💼 Experience",
-        "🚀 Projects & Skills",
-        "🎯 Job Tailoring & Certs"
-    ])
+    st.markdown("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
     # ---------------------------------------------------------
-    # TAB 1: Personal Info
+    # SECTION 1: Personal Details
     # ---------------------------------------------------------
-    with tab1:
-        st.subheader("Personal & Contact Details")
+    with st.expander("👤 Personal Details", expanded=True):
         c1, c2 = st.columns(2)
         with c1:
-            personal["full_name"] = st.text_input("Full Name *", value=personal.get("full_name", ""))
-            personal["email"] = st.text_input("Email Address *", value=personal.get("email", ""))
-            personal["phone"] = st.text_input("Phone Number *", value=personal.get("phone", ""))
-            personal["location"] = st.text_input("Location (City, State/Country)", value=personal.get("location", ""))
+            personal["full_name"] = st.text_input("Full Name *", value=personal.get("full_name", ""), key="ws_name")
+            personal["email"] = st.text_input("Email Address *", value=personal.get("email", ""), key="ws_email")
+            personal["phone"] = st.text_input("Phone Number *", value=personal.get("phone", ""), key="ws_phone")
         with c2:
-            personal["linkedin"] = st.text_input("LinkedIn Profile URL", value=personal.get("linkedin", ""))
-            personal["github"] = st.text_input("GitHub / Portfolio URL", value=personal.get("github", ""))
-            personal["portfolio"] = st.text_input("Personal Website", value=personal.get("portfolio", ""))
-
-        st.subheader("Professional Summary")
-        summary_val = st.text_area("Summary Statement", value=personal.get("summary", ""), height=100, help="Brief overview of your qualifications and goals.")
-        personal["summary"] = summary_val
-
-        col_sum1, col_sum2 = st.columns([2, 1])
-        with col_sum2:
-            if st.button("✨ AI Generate Summary", type="primary", use_container_width=True):
-                api_key = get_api_key()
-                with st.spinner("Crafting AI Professional Summary..."):
-                    generated = generate_summary(personal, job_target, skills, api_key=api_key)
-                    personal["summary"] = generated
-                    st.success("Summary generated successfully!")
-                    st.rerun()
+            personal["location"] = st.text_input("Location (City, State/Country)", value=personal.get("location", ""), key="ws_loc")
+            personal["linkedin"] = st.text_input("LinkedIn Profile URL", value=personal.get("linkedin", ""), key="ws_link")
+            personal["portfolio"] = st.text_input("GitHub / Portfolio URL", value=personal.get("portfolio", ""), key="ws_port")
 
     # ---------------------------------------------------------
-    # TAB 2: Education
+    # SECTION 2: Education (Fully Removable)
     # ---------------------------------------------------------
-    with tab2:
-        st.subheader("Education History")
+    with st.expander("🎓 Education", expanded=False):
         if not education:
-            education.append({"degree": "", "field_of_study": "", "institution": "", "start_year": "", "end_year": "", "grade": ""})
+            st.info("ℹ️ No education entries added yet. (Click '➕ Add Education' below to add one)")
+        else:
+            for idx, edu in enumerate(education):
+                c_hdr, c_rem = st.columns([3, 1])
+                with c_hdr:
+                    st.markdown(f"#### Education #{idx+1}")
+                with c_rem:
+                    if st.button("🗑️ Remove Education", key=f"btn_rem_edu_{idx}", use_container_width=True):
+                        education.pop(idx)
+                        st.rerun()
 
-        for idx, edu in enumerate(education):
-            with st.expander(f"Education #{idx+1}: {edu.get('degree', 'New Degree')}", expanded=True):
                 e1, e2 = st.columns(2)
                 with e1:
-                    edu["degree"] = st.text_input(f"Degree / Qualification #{idx+1}", value=edu.get("degree", ""), key=f"edu_deg_{idx}")
-                    edu["field_of_study"] = st.text_input(f"Field of Study / Branch #{idx+1}", value=edu.get("field_of_study", ""), key=f"edu_f_{idx}")
-                    edu["institution"] = st.text_input(f"College / University #{idx+1}", value=edu.get("institution", ""), key=f"edu_i_{idx}")
+                    edu["degree"] = st.text_input(f"Degree / Qualification #{idx+1}", value=edu.get("degree", ""), key=f"ws_edu_deg_{idx}")
+                    edu["field_of_study"] = st.text_input(f"Field of Study / Major #{idx+1}", value=edu.get("field_of_study", ""), key=f"ws_edu_f_{idx}")
+                    edu["institution"] = st.text_input(f"College / University #{idx+1}", value=edu.get("institution", ""), key=f"ws_edu_i_{idx}")
                 with e2:
-                    edu["start_year"] = st.text_input(f"Start Year #{idx+1}", value=edu.get("start_year", ""), key=f"edu_sy_{idx}")
-                    edu["end_year"] = st.text_input(f"End Year #{idx+1}", value=edu.get("end_year", ""), key=f"edu_ey_{idx}")
-                    edu["grade"] = st.text_input(f"GPA / Percentage #{idx+1}", value=edu.get("grade", ""), key=f"edu_g_{idx}")
+                    edu["start_year"] = st.text_input(f"Start Year #{idx+1}", value=edu.get("start_year", ""), key=f"ws_edu_sy_{idx}")
+                    edu["end_year"] = st.text_input(f"End Year #{idx+1}", value=edu.get("end_year", ""), key=f"ws_edu_ey_{idx}")
+                    edu["grade"] = st.text_input(f"GPA / Grade #{idx+1}", value=edu.get("grade", ""), key=f"ws_edu_g_{idx}")
+                st.divider()
 
-        c_add, c_rem = st.columns([1, 1])
-        with c_add:
-            if st.button("➕ Add Another Education"):
-                education.append({"degree": "", "field_of_study": "", "institution": "", "start_year": "", "end_year": "", "grade": ""})
-                st.rerun()
+        st.write("")
+        if st.button("➕ Add Education", key="btn_add_edu"):
+            education.append({"degree": "", "field_of_study": "", "institution": "", "start_year": "", "end_year": "", "grade": ""})
+            st.rerun()
 
     # ---------------------------------------------------------
-    # TAB 3: Experience
+    # SECTION 3: Skills (Fully Removable)
     # ---------------------------------------------------------
-    with tab3:
-        st.subheader("Work & Internship Experience")
+    with st.expander("💡 Skills", expanded=False):
+        if not skills:
+            st.info("ℹ️ No skill categories added yet. (Click '➕ Add Skill Category' below to add one)")
+        else:
+            for idx, sk in enumerate(skills):
+                s1, s2, s3 = st.columns([1.5, 2.5, 1])
+                with s1:
+                    sk["category_name"] = st.text_input(f"Skill Category #{idx+1}", value=sk.get("category_name", ""), key=f"ws_sk_cat_{idx}")
+                with s2:
+                    sk_str = ", ".join(sk.get("skills", []))
+                    new_sk_str = st.text_input(f"Skills (Comma separated) #{idx+1}", value=sk_str, key=f"ws_sk_val_{idx}")
+                    sk["skills"] = [item.strip() for item in new_sk_str.split(",") if item.strip()]
+                with s3:
+                    st.write("")
+                    st.write("")
+                    if st.button("🗑️ Remove", key=f"btn_rem_sk_{idx}", use_container_width=True):
+                        skills.pop(idx)
+                        st.rerun()
+
+        st.write("")
+        if st.button("➕ Add Skill Category", key="btn_add_sk"):
+            skills.append({"category_name": "", "skills": []})
+            st.rerun()
+
+    # ---------------------------------------------------------
+    # SECTION 4: Projects (Fully Removable)
+    # ---------------------------------------------------------
+    with st.expander("🚀 Projects", expanded=False):
+        if not projects:
+            st.info("ℹ️ No project entries added yet. (Click '➕ Add Project' below to add one)")
+        else:
+            for idx, proj in enumerate(projects):
+                p_hdr, p_rem = st.columns([3, 1])
+                with p_hdr:
+                    st.markdown(f"#### Project #{idx+1}: {proj.get('title', 'New Project')}")
+                with p_rem:
+                    if st.button("🗑️ Remove Project", key=f"btn_rem_proj_{idx}", use_container_width=True):
+                        projects.pop(idx)
+                        st.rerun()
+
+                proj["title"] = st.text_input(f"Project Title #{idx+1}", value=proj.get("title", ""), key=f"ws_proj_t_{idx}")
+                proj["description"] = st.text_area(f"Description #{idx+1}", value=proj.get("description", ""), height=80, key=f"ws_proj_d_{idx}")
+                proj["technologies"] = st.text_input(f"Technologies Used #{idx+1}", value=proj.get("technologies", ""), key=f"ws_proj_tech_{idx}")
+                proj["achievement"] = st.text_input(f"Key Achievement (Optional) #{idx+1}", value=proj.get("achievement", ""), key=f"ws_proj_ach_{idx}")
+
+                st.divider()
+
+        st.write("")
+        if st.button("➕ Add Project", key="btn_add_proj", type="secondary"):
+            projects.append({
+                "title": "",
+                "description": "",
+                "technologies": "",
+                "achievement": "",
+                "bullet_points": []
+            })
+            st.rerun()
+
+    # ---------------------------------------------------------
+    # SECTION 5: Experience (Fully Removable - Optional for Freshers / Students)
+    # ---------------------------------------------------------
+    with st.expander("💼 Experience (Optional)", expanded=False):
         if not experience:
-            experience.append({"job_title": "", "company": "", "location": "", "start_date": "", "end_date": "", "bullet_points": [""]})
+            st.info("ℹ️ No work experience entries added. (Freshers & Students can skip this section)")
+        else:
+            for idx, exp in enumerate(experience):
+                x_hdr, x_rem = st.columns([3, 1])
+                with x_hdr:
+                    st.markdown(f"#### Role #{idx+1}: {exp.get('job_title', 'Job Title')}")
+                with x_rem:
+                    if st.button("🗑️ Remove Experience", key=f"btn_rem_exp_{idx}", use_container_width=True):
+                        experience.pop(idx)
+                        st.rerun()
 
-        for idx, exp in enumerate(experience):
-            with st.expander(f"Experience #{idx+1}: {exp.get('job_title', 'Role')} at {exp.get('company', 'Company')}", expanded=True):
                 x1, x2 = st.columns(2)
                 with x1:
-                    exp["job_title"] = st.text_input(f"Job Title / Role #{idx+1}", value=exp.get("job_title", ""), key=f"exp_t_{idx}")
-                    exp["company"] = st.text_input(f"Company / Organization #{idx+1}", value=exp.get("company", ""), key=f"exp_c_{idx}")
+                    exp["job_title"] = st.text_input(f"Job Title #{idx+1}", value=exp.get("job_title", ""), key=f"ws_exp_t_{idx}")
+                    exp["company"] = st.text_input(f"Company #{idx+1}", value=exp.get("company", ""), key=f"ws_exp_c_{idx}")
                 with x2:
-                    exp["start_date"] = st.text_input(f"Start Date #{idx+1}", value=exp.get("start_date", ""), key=f"exp_sd_{idx}")
-                    exp["end_date"] = st.text_input(f"End Date #{idx+1}", value=exp.get("end_date", ""), key=f"exp_ed_{idx}")
+                    exp["start_date"] = st.text_input(f"Start Date #{idx+1}", value=exp.get("start_date", ""), key=f"ws_exp_sd_{idx}")
+                    exp["end_date"] = st.text_input(f"End Date #{idx+1}", value=exp.get("end_date", ""), key=f"ws_exp_ed_{idx}")
 
                 bullets = exp.get("bullet_points", [""])
                 b_text = "\n".join(bullets)
-                new_b_text = st.text_area(f"Key Accomplishments (One per line) #{idx+1}", value=b_text, height=100, key=f"exp_b_{idx}")
+                new_b_text = st.text_area(f"Key Accomplishments (One per line) #{idx+1}", value=b_text, height=100, key=f"ws_exp_b_{idx}")
                 exp["bullet_points"] = [line.strip() for line in new_b_text.split("\n") if line.strip()]
+                st.divider()
 
-        if st.button("➕ Add Work Experience"):
+        st.write("")
+        if st.button("➕ Add Experience", key="btn_add_exp"):
             experience.append({"job_title": "", "company": "", "location": "", "start_date": "", "end_date": "", "bullet_points": [""]})
             st.rerun()
 
     # ---------------------------------------------------------
-    # TAB 4: Projects & Skills
+    # SECTION 6: Certifications (Fully Removable)
     # ---------------------------------------------------------
-    with tab4:
-        st.subheader("Featured Projects")
-        if not projects:
-            projects.append({"title": "", "technologies": "", "description": "", "bullet_points": [""]})
+    with st.expander("📜 Certifications (Optional)", expanded=False):
+        if not certs:
+            st.info("ℹ️ No certifications added. (Optional section)")
+        else:
+            for idx, c in enumerate(certs):
+                c1, c2, c3, c4 = st.columns([2, 2, 2, 1])
+                with c1:
+                    c["name"] = st.text_input(f"Certificate Name #{idx+1}", value=c.get("name", ""), key=f"ws_cert_n_{idx}")
+                with c2:
+                    c["issuing_organization"] = st.text_input(f"Issuer #{idx+1}", value=c.get("issuing_organization", ""), key=f"ws_cert_i_{idx}")
+                with c3:
+                    c["issue_date"] = st.text_input(f"Issue Date / Year #{idx+1}", value=c.get("issue_date", ""), key=f"ws_cert_d_{idx}")
+                with c4:
+                    st.write("")
+                    st.write("")
+                    if st.button("🗑️ Remove", key=f"btn_rem_cert_{idx}", use_container_width=True):
+                        certs.pop(idx)
+                        st.rerun()
 
-        for idx, proj in enumerate(projects):
-            with st.expander(f"Project #{idx+1}: {proj.get('title', 'Project Title')}", expanded=True):
-                p1, p2 = st.columns(2)
-                with p1:
-                    proj["title"] = st.text_input(f"Project Title #{idx+1}", value=proj.get("title", ""), key=f"proj_t_{idx}")
-                    proj["technologies"] = st.text_input(f"Tech Stack #{idx+1}", value=proj.get("technologies", ""), key=f"proj_tech_{idx}")
-                with p2:
-                    proj["description"] = st.text_input(f"Short Description #{idx+1}", value=proj.get("description", ""), key=f"proj_d_{idx}")
-
-                bullets = proj.get("bullet_points", [""])
-                b_text = "\n".join(bullets)
-                new_b_text = st.text_area(f"Project Highlights (One per line) #{idx+1}", value=b_text, height=100, key=f"proj_b_{idx}")
-                proj["bullet_points"] = [line.strip() for line in new_b_text.split("\n") if line.strip()]
-
-        if st.button("➕ Add Project"):
-            projects.append({"title": "", "technologies": "", "description": "", "bullet_points": [""]})
+        st.write("")
+        if st.button("➕ Add Certification", key="btn_add_cert"):
+            certs.append({"name": "", "issuing_organization": "", "issue_date": ""})
             st.rerun()
 
-        st.divider()
-        st.subheader("Technical & Soft Skills")
-        if not skills:
-            skills.extend([
-                {"category_name": "Programming Languages", "skills": ["Python", "SQL", "JavaScript"]},
-                {"category_name": "Frameworks & Tools", "skills": ["Streamlit", "Git", "REST APIs"]}
-            ])
-
-        for idx, sk in enumerate(skills):
-            s1, s2 = st.columns([1, 2])
-            with s1:
-                sk["category_name"] = st.text_input(f"Category #{idx+1}", value=sk.get("category_name", ""), key=f"sk_cat_{idx}")
-            with s2:
-                sk_str = ", ".join(sk.get("skills", []))
-                new_sk_str = st.text_input(f"Skills (Comma separated) #{idx+1}", value=sk_str, key=f"sk_val_{idx}")
-                sk["skills"] = [item.strip() for item in new_sk_str.split(",") if item.strip()]
-
     # ---------------------------------------------------------
-    # TAB 5: Job Tailoring & Certifications
+    # SECTION 7: Career Goal
     # ---------------------------------------------------------
-    with tab5:
-        st.subheader("Job Application Details (For AI Personalization)")
-        job_target["job_title"] = st.text_input("Target Job Title", value=job_target.get("job_title", ""), placeholder="e.g. Data Scientist / Software Engineer")
-        job_target["company_name"] = st.text_input("Target Company Name", value=job_target.get("company_name", ""), placeholder="e.g. Google / Microsoft")
-        job_target["job_description"] = st.text_area("Target Job Description (Paste here)", value=job_target.get("job_description", ""), height=150, help="Paste job posting text here for ATS optimization.")
+    with st.expander("🎯 Career Goal", expanded=False):
+        summary_val = st.text_area(
+            "Professional Summary / Career Objective",
+            value=personal.get("summary", ""),
+            height=120,
+            key="ws_summary_input"
+        )
+        personal["summary"] = summary_val
 
-        st.divider()
-        st.subheader("Certifications & Achievements")
-        if not certs:
-            certs.append({"name": "", "issuing_organization": "", "issue_date": ""})
+        if st.button("✨ AI Generate Career Goal Summary", type="primary", key="btn_ai_gen_summary"):
+            api_key = get_api_key()
+            with st.spinner("Generating summary..."):
+                gen_summary = generate_summary(personal, job_target, skills, api_key=api_key)
+                personal["summary"] = gen_summary
+                st.success("Generated!")
+                st.rerun()
 
-        for idx, c in enumerate(certs):
-            c1, c2, c3 = st.columns(3)
-            with c1:
-                c["name"] = st.text_input(f"Certificate Name #{idx+1}", value=c.get("name", ""), key=f"cert_n_{idx}")
-            with c2:
-                c["issuing_organization"] = st.text_input(f"Issuer #{idx+1}", value=c.get("issuing_organization", ""), key=f"cert_i_{idx}")
-            with c3:
-                c["issue_date"] = st.text_input(f"Year / Date #{idx+1}", value=c.get("issue_date", ""), key=f"cert_d_{idx}")
-
+    st.markdown("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     st.write("")
-    st.divider()
 
-    # Next step footer action
-    col_l, col_r = st.columns([3, 1])
-    with col_r:
-        if st.button("Proceed to Template Selection ➡️", type="primary", use_container_width=True):
-            st.session_state["resume_data"] = resume
+    # Sequential Back & Continue Navigation
+    col_l, col_r = st.columns([1, 1])
+    with col_l:
+        if st.button("⬅️ Back to Template", use_container_width=True, key="btn_ws_back"):
             st.session_state["current_page"] = "template_selection"
+            st.rerun()
+    with col_r:
+        if st.button("Continue to Review ➡️", type="primary", use_container_width=True, key="btn_ws_continue"):
+            st.session_state["resume_data"] = resume
+            st.session_state["current_page"] = "review"
             st.rerun()
