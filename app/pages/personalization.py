@@ -6,7 +6,7 @@ Author      : Santosh Kolagani
 
 Purpose:
     Screen 5 – Personalization: Target Job Role, Target Company & Job Description inputs
-    with AI Company Online Resource intelligence and Skip Personalization action.
+    with AI Company Online Resource intelligence and redirection to Template Gallery.
 ===========================================================
 """
 
@@ -58,7 +58,7 @@ def _generate_company_insights(company: str, role: str, api_key: str) -> str:
 
 
 def show_personalization():
-    """Renders Screen 5 – Personalization with AI Company Resources & Skip Option."""
+    """Renders Screen 5 – Personalization redirecting directly to Template Gallery."""
     render_navbar()
 
     # Guard check: If General Resume was selected, skip automatically to workspace
@@ -129,22 +129,23 @@ def show_personalization():
 
         with c_b:
             if st.button("⬅️ Back", use_container_width=True, key="btn_pers_back"):
-                st.session_state["current_page"] = "template_selection"
+                st.session_state["current_page"] = "home"
                 st.rerun()
 
         with c_sk:
-            # REQUIREMENT: Skip button if user doesn't want to specify company/role details
+            # REQUIREMENT: Skip button redirects directly to Template Gallery
             if st.button("⏭️ Skip Personalization", use_container_width=True, key="btn_pers_skip"):
                 job_target["job_title"] = job_target.get("job_title", "Software Developer")
                 st.session_state["resume_data"] = resume
-                st.session_state["current_page"] = "data_collection"
+                st.session_state["current_page"] = "template_selection"
                 st.rerun()
 
         with c_s:
+            # REQUIREMENT: Save & Continue redirects directly to Template Gallery
             if st.button("Save & Continue ➡️", type="primary", use_container_width=True, key="btn_pers_save"):
                 job_target["job_title"] = target_role if target_role.strip() else "Software Developer"
                 job_target["company_name"] = target_company.strip()
                 job_target["job_description"] = job_desc.strip()
                 st.session_state["resume_data"] = resume
-                st.session_state["current_page"] = "data_collection"
+                st.session_state["current_page"] = "template_selection"
                 st.rerun()
