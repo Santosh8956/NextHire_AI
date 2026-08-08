@@ -5,7 +5,8 @@ File        : download.py
 Author      : Santosh Kolagani
 
 Purpose:
-    Final PDF Export & High-Res Document Preview Page using render_html.
+    Final PDF Export & High-Res Document Preview Page with dynamic
+    return navigation for Switch Template and Edit Content options.
 ===========================================================
 """
 
@@ -89,10 +90,12 @@ def show_download():
         c1, c2 = st.columns(2)
         with c1:
             if st.button("✍️ Edit Content", use_container_width=True):
+                st.session_state["return_to_page"] = "download"
                 st.session_state["current_page"] = "resume_editor"
                 st.rerun()
         with c2:
             if st.button("🎨 Switch Template", use_container_width=True):
+                st.session_state["return_to_page"] = "download"
                 st.session_state["current_page"] = "template_selection"
                 st.rerun()
 
