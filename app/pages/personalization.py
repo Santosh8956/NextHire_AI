@@ -69,7 +69,7 @@ def show_personalization():
     col1, col2, col3 = st.columns([1, 2.8, 1])
 
     with col2:
-        c_pers_hdr, c_pers_sw = st.columns([3, 1.2])
+        c_pers_hdr, c_pers_sw = st.columns([2.6, 1.8])
         with c_pers_hdr:
             render_html(
                 f"""
@@ -81,11 +81,18 @@ def show_personalization():
             )
         with c_pers_sw:
             st.write("")
-            if st.button("🔄 Switch to General", key="btn_pers_switch_gen", use_container_width=True):
-                st.session_state["resume_type_choice"] = "General Resume"
-                st.session_state["home_step"] = 3
-                st.session_state["current_page"] = "home"
-                st.rerun()
+            c_p_back, c_p_sw = st.columns([1, 1.3])
+            with c_p_back:
+                if st.button("⬅️ Back", key="btn_pers_top_back", use_container_width=True):
+                    st.session_state["current_page"] = "home"
+                    st.session_state["home_step"] = 4
+                    st.rerun()
+            with c_p_sw:
+                if st.button("📄 Switch to General", key="btn_pers_switch_gen", type="primary", use_container_width=True):
+                    st.session_state["resume_type_choice"] = "General Resume"
+                    st.session_state["home_step"] = 4
+                    st.session_state["current_page"] = "home"
+                    st.rerun()
 
         if "resume_data" not in st.session_state or not st.session_state["resume_data"]:
             st.session_state["resume_data"] = SAMPLE_RESUME_DATA.copy()

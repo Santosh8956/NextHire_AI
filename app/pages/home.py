@@ -191,8 +191,12 @@ def show_home():
                 """
             )
 
-            c1, c2 = st.columns([1, 1])
+            c1, c2 = st.columns([1, 1.2])
             with c1:
+                if st.form_submit_button("⬅️ Back to Welcome", use_container_width=True):
+                    st.session_state["home_step"] = 1
+                    st.rerun()
+            with c2:
                 if st.form_submit_button("🚀 Save Name & Start Building ➡️", type="primary", use_container_width=True):
                     if entered_name.strip():
                         st.session_state["user_name"] = entered_name.strip()
@@ -219,16 +223,23 @@ def show_home():
     # STEP 3: GENERAL RESUME vs CUSTOMIZED RESUME (Direct Personalization Redirection)
     # ---------------------------------------------------------
     elif home_step == 3:
-        render_html(
-            f"""
-            <div style='background: #F0FDF4; border-left: 5px solid #16A34A; border-radius: 12px; padding: 22px 25px; margin-bottom: 25px;'>
-                <h3 style='color: #15803D; margin-top: 0; font-size: 1.4rem;'>Nice to meet you, {user_name}! 🚀</h3>
-                <p style='color: #334155; font-size: 1.1rem; margin-bottom: 0;'>
-                    <b>What brings you here today?</b> Please choose what you would like to create:
-                </p>
-            </div>
-            """
-        )
+        c_st3_hdr, c_st3_back = st.columns([3.5, 1])
+        with c_st3_hdr:
+            render_html(
+                f"""
+                <div style='background: #F0FDF4; border-left: 5px solid #16A34A; border-radius: 12px; padding: 18px 22px; margin-bottom: 20px;'>
+                    <h3 style='color: #15803D; margin: 0 0 4px 0; font-size: 1.35rem;'>Nice to meet you, {user_name}! 🚀</h3>
+                    <p style='color: #334155; font-size: 1rem; margin: 0;'>
+                        <b>What brings you here today?</b> Please choose your resume creation path:
+                    </p>
+                </div>
+                """
+            )
+        with c_st3_back:
+            st.write("")
+            if st.button("⬅️ Back to Name", key="btn_step3_back", use_container_width=True):
+                st.session_state["home_step"] = 2
+                st.rerun()
 
         col_gen, col_cust = st.columns(2)
 
@@ -245,7 +256,7 @@ def show_home():
                 """
             )
             st.write("")
-            if st.button("🚀 General Resume", type="primary", use_container_width=True, key="btn_select_general"):
+            if st.button("🚀 Select General Resume", type="primary", use_container_width=True, key="btn_select_general"):
                 st.session_state["resume_type_choice"] = "General Resume"
                 st.session_state["home_step"] = 4
                 st.rerun()
@@ -263,7 +274,7 @@ def show_home():
                 """
             )
             st.write("")
-            if st.button("🎯 Customized Resume", type="primary", use_container_width=True, key="btn_select_customized"):
+            if st.button("🎯 Select Customized Resume", type="primary", use_container_width=True, key="btn_select_customized"):
                 st.session_state["resume_type_choice"] = "Personalized Resume"
                 st.session_state["current_page"] = "personalization"
                 st.rerun()
@@ -273,29 +284,42 @@ def show_home():
     # ---------------------------------------------------------
     elif home_step == 4:
         rtype = st.session_state.get("resume_type_choice", "General Resume")
+        is_gen = (rtype == "General Resume")
 
-        c_dash_hdr, c_dash_sw = st.columns([3.2, 1.2])
+        c_dash_hdr, c_dash_btns = st.columns([2.6, 1.8])
         with c_dash_hdr:
             render_html(
                 f"""
                 <div style='background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
                             border: 2px solid #3B82F6;
                             border-radius: 16px;
-                            padding: 22px 26px;
+                            padding: 20px 24px;
                             color: white;
                             margin-bottom: 20px;'>
-                    <h2 style='margin: 0; color: #F8FAFC; font-size: 1.8rem;'>👋 Dashboard — Welcome, {user_name}!</h2>
-                    <p style='margin: 6px 0 0 0; color: #93C5FD; font-size: 0.98rem;'>
+                    <h2 style='margin: 0; color: #F8FAFC; font-size: 1.75rem;'>👋 Dashboard — Welcome, {user_name}!</h2>
+                    <p style='margin: 4px 0 0 0; color: #93C5FD; font-size: 0.95rem;'>
                         Active Resume Mode: <b style="color: #60A5FA;">{rtype}</b>
                     </p>
                 </div>
                 """
             )
-        with c_dash_sw:
+        with c_dash_btns:
             st.write("")
-            if st.button("🔄 Switch Mode (Gen / Custom)", key="btn_dash_switch_mode", use_container_width=True):
-                st.session_state["home_step"] = 3
-                st.rerun()
+            c_back, c_switch = st.columns([1, 1.3])
+            with c_back:
+                if st.button("⬅️ Back", key="btn_dash_back_choice", use_container_width=True):
+                    st.session_state["home_step"] = 3
+                    st.rerun()
+            with c_switch:
+                sw_label = "🎯 Switch to Custom" if is_gen else "📄 Switch to General"
+                if st.button(sw_label, key="btn_dash_instant_switch", type="primary", use_container_width=True):
+                    if is_gen:
+                        st.session_state["resume_type_choice"] = "Personalized Resume"
+                        st.session_state["current_page"] = "personalization"
+                    else:
+                        st.session_state["resume_type_choice"] = "General Resume"
+                        st.session_state["home_step"] = 4
+                    st.rerun()
 
         # Quick Action Row
         c_act1, c_act2 = st.columns(2)
