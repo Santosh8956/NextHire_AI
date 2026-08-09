@@ -3,6 +3,7 @@
 Project     : NextHire AI
 File        : main.py
 Author      : Santosh Kolagani
+Version     : 2.1.0 (Clean Server Build)
 
 Purpose:
     Entry point of the NextHire AI application supporting sequential
