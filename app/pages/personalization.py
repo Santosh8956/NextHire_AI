@@ -11,8 +11,12 @@ Purpose:
 """
 
 import streamlit as st
+import google.generativeai as genai
 from app.components.navbar import render_navbar
+from app.config.constants import SAMPLE_RESUME_DATA
+from app.config.settings import get_api_key
 from app.services.parser.resume_parser import extract_text_from_pdf, parse_resume_content
+from app.utils.helpers import render_html
 
 
 COMPANY_KNOWLEDGE = {
