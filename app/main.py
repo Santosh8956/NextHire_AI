@@ -37,6 +37,7 @@ from app.pages.completion import show_completion
 from app.pages.resume_editor import show_resume_editor
 from app.pages.resume_analysis import show_resume_analysis
 from app.pages.download import show_download
+from app.components.chatbot import render_floating_chatbot
 from app.config.constants import SAMPLE_RESUME_DATA
 
 
@@ -182,6 +183,7 @@ def main():
     load_css()
     initialize_session()
     route()
+    render_floating_chatbot()
 
 
 if __name__ == "__main__":
