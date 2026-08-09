@@ -21,6 +21,9 @@ def show_home():
     """Renders Welcome Onboarding Flow & Unique NextHire Dashboard."""
     render_navbar()
 
+    theme_mode = st.session_state.get("theme_mode", "dark")
+    is_dark = (theme_mode == "dark")
+
     # Onboarding Step State (1: Welcome, 2: Name Prompt, 3: General vs Customized, 4: Dashboard)
     if "home_step" not in st.session_state:
         st.session_state["home_step"] = 1
@@ -55,9 +58,6 @@ def show_home():
         )
 
         # Theme-aware styles for feature highlight cards
-        theme_mode = st.session_state.get("theme_mode", "dark")
-        is_dark = (theme_mode == "dark")
-
         c1_bg = "#1E293B" if is_dark else "#F0F9FF"
         c1_border = "#0284C7" if is_dark else "#BAE6FD"
         c1_title = "#38BDF8" if is_dark else "#0369A1"
