@@ -83,6 +83,12 @@ def render_navbar():
                 st.rerun()
 
         st.write("")
+        theme_mode = st.session_state.get("theme_mode", "dark")
+        sb_theme_btn = "☀️ Light Theme" if theme_mode == "dark" else "🌙 Dark Theme"
+        if st.button(sb_theme_btn, key="btn_sb_toggle_theme", use_container_width=True):
+            st.session_state["theme_mode"] = "light" if theme_mode == "dark" else "dark"
+            st.rerun()
+
         st.divider()
 
         render_html(
@@ -97,7 +103,7 @@ def render_navbar():
     # ---------------------------------------------------------
     # TOP HEADER NAVIGATION BAR
     # ---------------------------------------------------------
-    c_logo, c_dev, c_step, c_user = st.columns([1.1, 2.6, 1.8, 1.5])
+    c_logo, c_dev, c_step, c_user, c_theme = st.columns([1.1, 2.3, 1.6, 1.2, 1.0])
 
     with c_logo:
         if st.button("🚀 NextHire AI", key="nav_logo_home", use_container_width=True):
@@ -148,5 +154,12 @@ def render_navbar():
             </div>
             """
         )
+
+    with c_theme:
+        theme_mode = st.session_state.get("theme_mode", "dark")
+        top_theme_btn = "☀️ Light" if theme_mode == "dark" else "🌙 Dark"
+        if st.button(top_theme_btn, key="btn_top_toggle_theme", use_container_width=True):
+            st.session_state["theme_mode"] = "light" if theme_mode == "dark" else "dark"
+            st.rerun()
 
     st.divider()

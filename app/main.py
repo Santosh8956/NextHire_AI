@@ -50,8 +50,67 @@ st.set_page_config(
 
 # Global CSS & Meta Loader
 def load_css():
-    """Loads custom CSS stylesheet and Google verification metadata."""
+    """Loads custom CSS stylesheet, theme overrides, and Google verification metadata."""
     st.markdown('<meta name="google-site-verification" content="google0e683cf8cc1c7756" />', unsafe_allow_html=True)
+
+    theme_mode = st.session_state.get("theme_mode", "dark")
+
+    if theme_mode == "light":
+        theme_css = """
+        <style>
+            .stApp {
+                background-color: #F8FAFC !important;
+                color: #0F172A !important;
+            }
+            [data-testid="stSidebar"] {
+                background-color: #FFFFFF !important;
+                border-right: 1px solid #E2E8F0 !important;
+            }
+            .stMarkdown p, .stMarkdown span, .stMarkdown label, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5 {
+                color: #0F172A !important;
+            }
+            [data-testid="stMetricValue"] {
+                color: #2563EB !important;
+            }
+            [data-testid="stMetricLabel"] {
+                color: #475569 !important;
+            }
+            div[data-baseweb="select"] > div {
+                background-color: #FFFFFF !important;
+                color: #0F172A !important;
+                border-color: #CBD5E1 !important;
+            }
+        </style>
+        """
+    else:
+        theme_css = """
+        <style>
+            .stApp {
+                background-color: #0F172A !important;
+                color: #F8FAFC !important;
+            }
+            [data-testid="stSidebar"] {
+                background-color: #1E293B !important;
+                border-right: 1px solid #334155 !important;
+            }
+            .stMarkdown p, .stMarkdown span, .stMarkdown label, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5 {
+                color: #F8FAFC !important;
+            }
+            [data-testid="stMetricValue"] {
+                color: #60A5FA !important;
+            }
+            [data-testid="stMetricLabel"] {
+                color: #94A3B8 !important;
+            }
+            div[data-baseweb="select"] > div {
+                background-color: #1E293B !important;
+                color: #F8FAFC !important;
+                border-color: #334155 !important;
+            }
+        </style>
+        """
+    st.markdown(theme_css, unsafe_allow_html=True)
+
     css_path = Path(__file__).parent / "styles" / "custom.css"
     if css_path.exists():
         with open(css_path, "r", encoding="utf-8") as css:
@@ -69,7 +128,8 @@ def initialize_session():
         "resume_data": SAMPLE_RESUME_DATA.copy(),
         "selected_template": "ats_1",
         "resume_type_choice": "General Resume",
-        "api_key": ""
+        "api_key": "",
+        "theme_mode": "dark"
     }
 
     for key, value in defaults.items():
