@@ -139,7 +139,7 @@ def show_home():
     # ---------------------------------------------------------
     elif home_step == 2:
         render_html(
-            """
+            f"""
             <div style='background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
                         border: 2px solid #38BDF8;
                         border-radius: 24px;
@@ -148,24 +148,23 @@ def show_home():
                         box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);'>
                 <div style='display: flex; align-items: center; gap: 16px; margin-bottom: 20px;'>
                     <div style='background: linear-gradient(135deg, #2563EB 0%, #0284C7 100%);
-                                width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);'>
+                                width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.9rem; color: white; box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);'>
                         🤖
                     </div>
                     <div>
-                        <h3 style='margin: 0; color: #F8FAFC; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.3px;'>NextHire AI Resume Architect</h3>
+                        <h3 style='margin: 0; color: #F8FAFC; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.3px;'>NextHire AI Career Assistant</h3>
                         <div style='display: flex; align-items: center; gap: 8px; margin-top: 4px;'>
-                            <span style='background: #16A34A; width: 8px; height: 8px; border-radius: 50%; display: inline-block;'></span>
-                            <span style='color: #4ADE80; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;'>AI Model Active • Personalizing Your Session</span>
+                            <span style='background: #16A34A; width: 9px; height: 9px; border-radius: 50%; display: inline-block;'></span>
+                            <span style='color: #4ADE80; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;'>AI Intelligence Online • Ready to Assist You</span>
                         </div>
                     </div>
                 </div>
-                <div style='background: rgba(30, 41, 59, 0.8); border-left: 4px solid #38BDF8; padding: 20px 24px; border-radius: 14px; margin-bottom: 15px;'>
-                    <p style='color: #F1F5F9; font-size: 1.15rem; margin: 0 0 10px 0; line-height: 1.6; font-weight: 500;'>
-                        👋 <b>Welcome!</b> I'm NextHire AI, your personal resume architect and ATS strategy partner.
+                <div style='background: rgba(30, 41, 59, 0.8); border-left: 4px solid #38BDF8; padding: 22px 26px; border-radius: 14px; margin-bottom: 15px;'>
+                    <p style='color: #F1F5F9; font-size: 1.2rem; margin: 0 0 10px 0; line-height: 1.6; font-weight: 600;'>
+                        ✨ Greetings! I'm NextHire AI, your personal career strategist and resume assistant.
                     </p>
-                    <p style='color: #94A3B8; font-size: 1rem; margin: 0; line-height: 1.55;'>
-                        I analyze target job postings, enhance experience bullets with high-impact action metrics, and generate publication-ready 4K ATS vector resumes.
-                        <b>To get started on your personalized resume, what should I call you?</b>
+                    <p style='color: #CBD5E1; font-size: 1.02rem; margin: 0; line-height: 1.6;'>
+                        I'm here to assist you step-by-step in building a high-impact, ATS-optimized resume tailored for top career opportunities. To personalize your workspace and document, please enter your full name below.
                     </p>
                 </div>
             </div>
@@ -176,20 +175,20 @@ def show_home():
             entered_name = st.text_input(
                 "👤 Enter Your Full Name:",
                 value=user_name,
-                placeholder="e.g. Santosh Kumar Kolagani",
-                help="Your name will be placed at the top of your resume and personalized greetings."
+                placeholder="Enter your full name here...",
+                key="name_input_field"
             )
 
-            preview_greeting = entered_name.strip() if entered_name.strip() else "Future Industry Leader"
-            render_html(
-                f"""
-                <div style='background: #F0F9FF; border: 1.5px dashed #0284C7; border-radius: 12px; padding: 12px 18px; margin: 14px 0;'>
-                    <p style='color: #0369A1; font-size: 0.95rem; margin: 0;'>
-                        ✨ Live Greeting Preview: <b>"Welcome aboard, {preview_greeting}! Let's craft your high-impact resume."</b>
-                    </p>
-                </div>
-                """
-            )
+            if entered_name.strip():
+                render_html(
+                    f"""
+                    <div style='background: {"#1E293B" if is_dark else "#F0F9FF"}; border: 1.5px solid {"#0284C7" if is_dark else "#BAE6FD"}; border-radius: 12px; padding: 12px 18px; margin: 14px 0;'>
+                        <p style='color: {"#38BDF8" if is_dark else "#0369A1"}; font-size: 0.98rem; margin: 0; font-weight: 600;'>
+                            ✨ Welcome aboard, {entered_name.strip()}! Let's craft your high-impact resume.
+                        </p>
+                    </div>
+                    """
+                )
 
             c1, c2 = st.columns([1, 1.2])
             with c1:
@@ -197,7 +196,7 @@ def show_home():
                     st.session_state["home_step"] = 1
                     st.rerun()
             with c2:
-                if st.form_submit_button("🚀 Save Name & Start Building ➡️", type="primary", use_container_width=True):
+                if st.form_submit_button("🚀 Save Name & Continue ➡️", type="primary", use_container_width=True):
                     if entered_name.strip():
                         st.session_state["user_name"] = entered_name.strip()
                         resume = st.session_state.get("resume_data", {})
