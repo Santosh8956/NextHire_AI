@@ -132,7 +132,7 @@ def render_navbar():
     # ---------------------------------------------------------
     # TOP HEADER NAVIGATION BAR
     # ---------------------------------------------------------
-    c_logo, c_dev, c_step, c_user, c_bot, c_theme = st.columns([1.1, 2.1, 1.5, 1.2, 1.1, 0.9])
+    c_logo, c_dev, c_step, c_user, c_theme = st.columns([1.2, 2.5, 1.5, 1.2, 1.0])
 
     with c_logo:
         if st.button("🚀 NextHire AI", key="nav_logo_home", use_container_width=True):
@@ -182,11 +182,6 @@ def render_navbar():
             </div>
             """
         )
-
-    with c_bot:
-        if st.button("🤖 AI Chatbot", key="btn_top_ai_chatbot", type="primary", use_container_width=True):
-            st.session_state["current_page"] = "ai_chatbot"
-            st.rerun()
 
     with c_theme:
         top_theme_btn = "☀️ Light" if is_dark else "🌙 Dark"
