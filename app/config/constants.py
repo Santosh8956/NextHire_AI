@@ -88,6 +88,11 @@ def _generate_templates():
         ("mod_3", "Modern Slate Executive", "Slate Pro", "Sleek slate gray design with refined border dividers.", "#475569", "Helvetica"),
         ("mod_4", "Modern Executive Teal", "Teal Accent", "Teal highlight headers for product managers & team leads.", "#0D9488", "Helvetica"),
         ("mod_5", "Modern Crimson Leader", "Executive", "Bold red top border for senior directors & VP candidates.", "#991B1B", "Helvetica"),
+        ("mod_6", "Modern Glassmorphism Tech", "SaaS Modern", "Sleek SaaS layout for product managers & tech leaders.", "#2563EB", "Helvetica"),
+        ("mod_7", "Modern Startup Founder", "Founder", "Dynamic layout highlighting venture milestones & products.", "#0284C7", "Helvetica"),
+        ("mod_8", "Modern Nordic Minimalist", "Nordic Clean", "Ultra-clean Scandinavian layout with subtle gray dividers.", "#374151", "Helvetica"),
+        ("mod_9", "Modern Cyber Teal", "Cyber Teal", "Vibrant teal header block for cloud architects & DevOps.", "#0D9488", "Helvetica"),
+        ("mod_10", "Modern Sunset Horizon", "Horizon", "Gradient accent header for marketing & growth leads.", "#EA580C", "Helvetica"),
     ]
     build_section("Modern Professional", modern_names)
 
@@ -100,6 +105,36 @@ def _generate_templates():
         ("tech_5", "Mobile App Developer", "iOS/Android", "Displays app store achievements, Swift, Kotlin & Flutter skills.", "#7C3AED", "Helvetica"),
     ]
     build_section("Tech & Developer", tech_names)
+
+    # 4. Creative & Design
+    creative_names = [
+        ("crt_1", "Creative Visual Portfolio", "Portfolio", "Dual column color layout with sidebar skills.", "#7C3AED", "Helvetica"),
+        ("crt_2", "Creative Coral Designer", "Design Pro", "Vibrant coral banner layout for UI/UX & Graphic Designers.", "#E11D48", "Helvetica"),
+        ("crt_3", "Creative Amber Studio", "Studio Art", "Warm amber accents with modern pill section blocks.", "#D97706", "Times-Roman"),
+        ("crt_4", "Creative Emerald Modern", "Emerald Clean", "Bold emerald vertical bar layout for product designers.", "#059669", "Helvetica"),
+        ("crt_5", "Creative Modern Violet", "Violet Elegance", "Purple gradient header with high-density skill tags.", "#6D28D9", "Helvetica"),
+    ]
+    build_section("Creative & Design", creative_names)
+
+    # 5. Executive & Senior
+    exec_names = [
+        ("exec_1", "Executive Board Director", "C-Suite", "Formal navy banner layout for CEOs, VPs, and Directors.", "#0F172A", "Times-Roman"),
+        ("exec_2", "Executive Platinum Leader", "Senior VP", "Double rule serif format with high-contrast executive summary.", "#334155", "Times-Roman"),
+        ("exec_3", "Executive Burgundy Director", "Director", "Rich burgundy accent headers for senior management.", "#881337", "Times-Roman"),
+        ("exec_4", "Executive Sapphire General", "General Mgr", "Deep sapphire header with split contact details.", "#1E3A8A", "Times-Roman"),
+        ("exec_5", "Executive Charcoal Enterprise", "Enterprise", "Charcoal minimalist layout for enterprise leadership.", "#111827", "Helvetica"),
+    ]
+    build_section("Executive & Senior", exec_names)
+
+    # 6. Academic & Research
+    acad_names = [
+        ("acad_1", "Academic University Scholar", "Scholar", "Formal academic format for professors, PhDs, & researchers.", "#1E3E62", "Times-Roman"),
+        ("acad_2", "Academic Research Scientist", "Research Pro", "Emphasizes publications, lab skills, and grants.", "#047857", "Times-Roman"),
+        ("acad_3", "Academic Faculty Fellow", "Faculty", "Classic serif layout with dual rule section headers.", "#4338CA", "Times-Roman"),
+        ("acad_4", "Academic Postdoc Associate", "Postdoc", "Clean structured layout for post-doctoral researchers.", "#0369A1", "Times-Roman"),
+        ("acad_5", "Academic STEM Fellow", "STEM Pro", "Formal technical academic template for STEM publications.", "#1E293B", "Courier"),
+    ]
+    build_section("Academic & Research", acad_names)
 
     return templates
 
