@@ -119,19 +119,21 @@ def show_resume_analysis():
                 """
             )
 
-        st.markdown("### 🔑 Missing Job Keywords")
-        keywords = analysis.get("missing_keywords", [])
-        if keywords:
-            for kw in keywords:
-                render_html(
-                    f"""
-                    <div style='background: #FFFBEB; border-left: 4px solid #D97706; padding: 10px; border-radius: 6px; margin-bottom: 8px; color: #92400E;'>
-                        ⚠️ Missing Target Keyword: <b>{kw}</b>
-                    </div>
-                    """
-                )
-        else:
-            st.info("No critical missing keywords detected!")
+        st.markdown("### 🎯 ATS Keyword Match Breakdown")
+        matched_kws = analysis.get("matched_keywords", [])
+        missing_kws = analysis.get("missing_keywords", [])
+
+        if matched_kws:
+            st.markdown("**Matched Target Keywords:**")
+            matched_html = " ".join([f"<span style='background: #DCFCE7; color: #15803D; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 0.85rem; display: inline-block; margin: 3px;'>✓ {kw}</span>" for kw in matched_kws])
+            render_html(f"<div style='margin-bottom: 14px;'>{matched_html}</div>")
+
+        if missing_kws:
+            st.markdown("**Missing Target Keywords (Add to Boost Score):**")
+            missing_html = " ".join([f"<span style='background: #FEE2E2; color: #991B1B; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 0.85rem; display: inline-block; margin: 3px;'>⚠️ {kw}</span>" for kw in missing_kws[:12]])
+            render_html(f"<div style='margin-bottom: 14px;'>{missing_html}</div>")
+        elif not matched_kws and not missing_kws:
+            st.info("Paste a Target Job Description in the Details Workspace to unlock full target keyword matching!")
 
     # ---------------------------------------------------------
     # RIGHT COLUMN: Interactive Areas for Improvement with Redirect Buttons

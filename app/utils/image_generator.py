@@ -40,8 +40,8 @@ def _load_font(size: int, font_type: str = "Helvetica", bold: bool = False):
 @st.cache_data(show_spinner=False)
 def generate_template_preview_image(template_info: dict, resume_data: dict = None) -> bytes:
     """
-    Generates a 900x1200 screen-optimized large, bold, crystal-clear PNG preview image.
-    Supporting 16 unique layout styles with vibrant colors and rich typography.
+    Generates a 900x1200 screen-optimized, large-font, high-contrast complete A4 page PNG preview.
+    Supporting 16 unique layout styles with vibrant colors and bold typography.
     """
     width, height = 900, 1200
     img = Image.new("RGB", (width, height), color="#FFFFFF")
@@ -53,13 +53,13 @@ def generate_template_preview_image(template_info: dict, resume_data: dict = Non
     font_type = template_info.get("font", "Helvetica")
     layout = template_info.get("layout_style", "header_banner")
 
-    # Screen-Optimized Large Bold Font Scaling (900x1200 sharp canvas)
-    title_font = _load_font(42, font_type, bold=True)
-    subtitle_font = _load_font(20, font_type, bold=False)
-    section_font = _load_font(25, font_type, bold=True)
-    item_title_font = _load_font(21, font_type, bold=True)
-    body_font = _load_font(18, font_type, bold=False)
-    small_font = _load_font(15, font_type, bold=False)
+    # High-Visibility Large Typography for Clear Previews (900x1200 canvas)
+    title_font = _load_font(44, font_type, bold=True)
+    subtitle_font = _load_font(18, font_type, bold=False)
+    section_font = _load_font(24, font_type, bold=True)
+    item_title_font = _load_font(20, font_type, bold=True)
+    body_font = _load_font(16, font_type, bold=False)
+    small_font = _load_font(14, font_type, bold=False)
 
     # Personal Profile
     personal = resume_data.get("personal_info", {}) if resume_data else {}
@@ -107,132 +107,135 @@ def generate_template_preview_image(template_info: dict, resume_data: dict = Non
             "end_year": "2026"
         }]
 
-    curr_y = 45
-    left_m = 50
+    curr_y = 42
+    left_m = 45
+    right_m = 45
 
     # ---------------------------------------------------------
-    # 16 DISTINCT VIBRANT LAYOUT STYLES (Screen-Optimized 900x1200)
+    # 16 DISTINCT VIBRANT LAYOUT STYLES (900x1200 Large Page View)
     # ---------------------------------------------------------
     if layout == "header_banner":
         draw.rectangle([0, 0, width, 140], fill=primary_rgb)
-        draw.text((50, 35), name, fill="#FFFFFF", font=title_font)
-        draw.text((50, 90), f"{email}  |  {phone}  |  {location}", fill="#F1F5F9", font=subtitle_font)
-        curr_y = 165
+        draw.text((45, 30), name, fill="#FFFFFF", font=title_font)
+        draw.text((45, 92), f"{email}  |  {phone}  |  {location}", fill="#F1F5F9", font=subtitle_font)
+        curr_y = 160
 
     elif layout == "left_accent":
         draw.rectangle([0, 0, 24, height], fill=primary_rgb)
-        draw.text((60, 40), name, fill=primary_rgb, font=title_font)
-        draw.text((60, 92), f"{email}  |  {phone}  |  {location}", fill="#475569", font=subtitle_font)
-        draw.line([(60, 125), (width - 50, 125)], fill=primary_rgb, width=4)
-        curr_y = 145
-        left_m = 60
-
-    elif layout == "split_header":
-        draw.text((50, 35), name, fill=primary_rgb, font=title_font)
-        draw.text((50, 88), "SOFTWARE & AI DEVELOPER", fill="#334155", font=subtitle_font)
-        draw.rectangle([width - 380, 28, width - 50, 118], fill="#F8FAFC", outline=primary_rgb, width=2)
-        draw.text((width - 360, 40), f"Email: {email}", fill="#1E293B", font=body_font)
-        draw.text((width - 360, 65), f"Phone: {phone}", fill="#1E293B", font=body_font)
-        draw.text((width - 360, 90), f"Loc: {location}", fill="#1E293B", font=body_font)
-        draw.line([(50, 138), (width - 50, 138)], fill=primary_rgb, width=4)
-        curr_y = 160
-
-    elif layout == "centered_minimal":
-        draw.text((width//2 - 170, 35), name, fill=primary_rgb, font=title_font)
-        draw.text((width//2 - 270, 88), f"{email}   •   {phone}   •   {location}", fill="#475569", font=subtitle_font)
-        draw.line([(90, 125), (width - 90, 125)], fill=primary_rgb, width=3)
-        draw.line([(90, 130), (width - 90, 130)], fill=primary_rgb, width=1)
-        curr_y = 150
-
-    elif layout == "code_terminal":
-        draw.rectangle([0, 0, width, 140], fill="#1E1E2E")
-        draw.text((50, 25), f"$ cat candidate_profile.json", fill="#A6E3A1", font=subtitle_font)
-        draw.text((50, 60), f"\"name\": \"{name}\", \"role\": \"Full-Stack AI Developer\"", fill="#F9E2AF", font=subtitle_font)
-        draw.text((50, 95), f"\"contact\": \"{email} | {phone}\"", fill="#89B4FA", font=subtitle_font)
-        curr_y = 165
-
-    elif layout == "executive_serif":
-        draw.line([(50, 30), (width - 50, 30)], fill=primary_rgb, width=4)
-        draw.text((50, 48), name, fill=primary_rgb, font=title_font)
-        draw.text((50, 98), f"EXECUTIVE PROFILE  |  {email}  |  {phone}", fill="#334155", font=subtitle_font)
-        draw.line([(50, 130), (width - 50, 130)], fill=primary_rgb, width=4)
-        draw.line([(50, 136), (width - 50, 136)], fill=primary_rgb, width=2)
-        curr_y = 155
-
-    elif layout == "modern_pills":
-        draw.rectangle([0, 0, width, 140], fill="#F8FAFC")
-        draw.rectangle([50, 28, 380, 82], fill=primary_rgb)
-        draw.text((70, 38), name, fill="#FFFFFF", font=title_font)
-        draw.text((50, 95), f"{email}  |  {phone}  |  {location}", fill="#475569", font=subtitle_font)
-        draw.line([(50, 130), (width - 50, 130)], fill=primary_rgb, width=4)
-        curr_y = 150
-
-    elif layout == "border_frame":
-        draw.rectangle([15, 15, width - 15, height - 15], outline=primary_rgb, width=4)
-        draw.text((55, 40), name, fill=primary_rgb, font=title_font)
-        draw.text((55, 92), f"{email}  |  {phone}  |  {location}", fill="#475569", font=subtitle_font)
-        draw.line([(55, 125), (width - 55, 125)], fill=primary_rgb, width=4)
+        draw.text((55, 34), name, fill=primary_rgb, font=title_font)
+        draw.text((55, 92), f"{email}  |  {phone}  |  {location}", fill="#334155", font=subtitle_font)
+        draw.line([(55, 125), (width - 45, 125)], fill=primary_rgb, width=3)
         curr_y = 145
         left_m = 55
 
+    elif layout == "split_header":
+        draw.text((45, 30), name, fill=primary_rgb, font=title_font)
+        draw.text((45, 84), "SOFTWARE & AI DEVELOPER", fill="#1E293B", font=subtitle_font)
+        draw.rectangle([width - 380, 20, width - 45, 118], fill="#F8FAFC", outline=primary_rgb, width=2)
+        draw.text((width - 365, 30), f"Email: {email}", fill="#0F172A", font=body_font)
+        draw.text((width - 365, 58), f"Phone: {phone}", fill="#0F172A", font=body_font)
+        draw.text((width - 365, 86), f"Loc: {location}", fill="#0F172A", font=body_font)
+        draw.line([(45, 132), (width - 45, 132)], fill=primary_rgb, width=3)
+        curr_y = 150
+
+    elif layout == "centered_minimal":
+        draw.text((width//2 - 180, 30), name, fill=primary_rgb, font=title_font)
+        draw.text((width//2 - 260, 84), f"{email}   •   {phone}   •   {location}", fill="#334155", font=subtitle_font)
+        draw.line([(70, 120), (width - 70, 120)], fill=primary_rgb, width=2)
+        draw.line([(70, 124), (width - 70, 124)], fill=primary_rgb, width=1)
+        curr_y = 145
+
+    elif layout == "code_terminal":
+        draw.rectangle([0, 0, width, 140], fill="#1E1E2E")
+        draw.text((45, 22), f"$ cat candidate_profile.json", fill="#A6E3A1", font=subtitle_font)
+        draw.text((45, 58), f"\"name\": \"{name}\", \"role\": \"Full-Stack AI Developer\"", fill="#F9E2AF", font=subtitle_font)
+        draw.text((45, 94), f"\"contact\": \"{email} | {phone}\"", fill="#89B4FA", font=subtitle_font)
+        curr_y = 160
+
+    elif layout == "executive_serif":
+        draw.line([(45, 25), (width - 45, 25)], fill=primary_rgb, width=3)
+        draw.text((45, 40), name, fill=primary_rgb, font=title_font)
+        draw.text((45, 94), f"EXECUTIVE PROFILE  |  {email}  |  {phone}", fill="#1E293B", font=subtitle_font)
+        draw.line([(45, 128), (width - 45, 128)], fill=primary_rgb, width=3)
+        draw.line([(45, 134), (width - 45, 134)], fill=primary_rgb, width=1)
+        curr_y = 150
+
+    elif layout == "modern_pills":
+        draw.rectangle([0, 0, width, 140], fill="#F8FAFC")
+        draw.rectangle([45, 22, 400, 78], fill=primary_rgb)
+        draw.text((60, 30), name, fill="#FFFFFF", font=title_font)
+        draw.text((45, 94), f"{email}  |  {phone}  |  {location}", fill="#334155", font=subtitle_font)
+        draw.line([(45, 130), (width - 45, 130)], fill=primary_rgb, width=3)
+        curr_y = 148
+
+    elif layout == "border_frame":
+        draw.rectangle([12, 12, width - 12, height - 12], outline=primary_rgb, width=3)
+        draw.text((48, 32), name, fill=primary_rgb, font=title_font)
+        draw.text((48, 86), f"{email}  |  {phone}  |  {location}", fill="#334155", font=subtitle_font)
+        draw.line([(48, 120), (width - 48, 120)], fill=primary_rgb, width=3)
+        curr_y = 140
+        left_m = 48
+        right_m = 48
+
     elif layout == "top_accent_bar":
-        draw.rectangle([0, 0, width, 24], fill=primary_rgb)
-        draw.rectangle([50, 45, width - 50, 125], fill="#F8FAFC", outline="#CBD5E1", width=2)
-        draw.text((70, 58), name, fill=primary_rgb, font=title_font)
-        draw.text((70, 96), f"{email}  |  {phone}  |  {location}", fill="#475569", font=subtitle_font)
+        draw.rectangle([0, 0, width, 22], fill=primary_rgb)
+        draw.rectangle([45, 38, width - 45, 125], fill="#F8FAFC", outline="#CBD5E1", width=2)
+        draw.text((60, 48), name, fill=primary_rgb, font=title_font)
+        draw.text((60, 92), f"{email}  |  {phone}  |  {location}", fill="#334155", font=subtitle_font)
         curr_y = 145
 
     elif layout == "sidebar_column":
-        draw.rectangle([0, 0, 290, height], fill="#F8FAFC")
-        draw.line([(290, 0), (290, height)], fill=primary_rgb, width=3)
-        draw.text((30, 40), name, fill=primary_rgb, font=_load_font(26, font_type, bold=True))
-        draw.text((30, 80), f"{email}\n{phone}\n{location}", fill="#475569", font=subtitle_font)
-        draw.text((30, 160), "SKILLS", fill=primary_rgb, font=section_font)
-        draw.text((30, 195), "• Python & SQL\n• Streamlit & APIs\n• Gemini LLMs\n• Data Science", fill="#334155", font=body_font)
-        left_m = 315
-        curr_y = 40
+        draw.rectangle([0, 0, 270, height], fill="#F8FAFC")
+        draw.line([(270, 0), (270, height)], fill=primary_rgb, width=3)
+        draw.text((25, 32), name, fill=primary_rgb, font=_load_font(24, font_type, bold=True))
+        draw.text((25, 78), f"{email}\n{phone}\n{location}", fill="#334155", font=subtitle_font)
+        draw.text((25, 160), "SKILLS", fill=primary_rgb, font=section_font)
+        draw.text((25, 196), "• Python & SQL\n• Streamlit & APIs\n• Gemini LLMs\n• Data Science", fill="#0F172A", font=body_font)
+        left_m = 290
+        right_m = 35
+        curr_y = 32
 
     elif layout == "creative_gradient":
-        draw.rectangle([0, 0, width, 80], fill=primary_rgb)
-        draw.rectangle([0, 80, width, 115], fill="#38BDF8")
-        draw.text((50, 30), name, fill="#FFFFFF", font=title_font)
-        draw.text((50, 88), f"{email}  |  {phone}  |  {location}", fill="#FFFFFF", font=subtitle_font)
-        curr_y = 140
+        draw.rectangle([0, 0, width, 82], fill=primary_rgb)
+        draw.rectangle([0, 82, width, 118], fill="#38BDF8")
+        draw.text((45, 24), name, fill="#FFFFFF", font=title_font)
+        draw.text((45, 88), f"{email}  |  {phone}  |  {location}", fill="#FFFFFF", font=subtitle_font)
+        curr_y = 142
 
     else:
         # Default layout fallback
-        draw.rectangle([0, 0, width, 115], fill=primary_rgb)
-        draw.text((50, 28), name, fill="#FFFFFF", font=title_font)
-        draw.text((50, 78), f"{email}  |  {phone}  |  {location}", fill="#F1F5F9", font=subtitle_font)
-        curr_y = 135
+        draw.rectangle([0, 0, width, 130], fill=primary_rgb)
+        draw.text((45, 26), name, fill="#FFFFFF", font=title_font)
+        draw.text((45, 82), f"{email}  |  {phone}  |  {location}", fill="#F1F5F9", font=subtitle_font)
+        curr_y = 148
 
-    # Helper for Section Header (Large Bold & High-Contrast)
+    # Helper for Section Header (Clean & Proportional)
     def draw_section_header(title):
         nonlocal curr_y
-        right_margin = 55 if layout == "border_frame" else (width - 290 if layout == "sidebar_column" else 50)
+        line_right = width - right_m
 
         if layout == "code_terminal":
             draw.text((left_m, curr_y), f"// {title}", fill=primary_rgb, font=section_font)
             curr_y += 30
-            draw.line([(left_m, curr_y), (width - right_margin, curr_y)], fill="#CBD5E1", width=2)
+            draw.line([(left_m, curr_y), (line_right, curr_y)], fill="#CBD5E1", width=1)
         elif layout in ["modern_pills", "classic_boxed"]:
-            draw.rectangle([left_m, curr_y, left_m + 320, curr_y + 36], fill=primary_rgb)
-            draw.text((left_m + 16, curr_y + 6), title, fill="#FFFFFF", font=section_font)
-            curr_y += 46
+            draw.rectangle([left_m, curr_y, left_m + 310, curr_y + 34], fill=primary_rgb)
+            draw.text((left_m + 14, curr_y + 4), title, fill="#FFFFFF", font=section_font)
+            curr_y += 42
         elif layout == "executive_serif":
-            draw.line([(left_m, curr_y), (width - right_margin, curr_y)], fill=primary_rgb, width=2)
+            draw.line([(left_m, curr_y), (line_right, curr_y)], fill=primary_rgb, width=1)
             draw.text((left_m, curr_y + 4), f"❖  {title}", fill=primary_rgb, font=section_font)
-            curr_y += 34
-            draw.line([(left_m, curr_y), (width - right_margin, curr_y)], fill=primary_rgb, width=2)
+            curr_y += 32
+            draw.line([(left_m, curr_y), (line_right, curr_y)], fill=primary_rgb, width=1)
         else:
             draw.text((left_m, curr_y), title, fill=primary_rgb, font=section_font)
             curr_y += 30
-            draw.line([(left_m, curr_y), (width - right_margin, curr_y)], fill=primary_rgb, width=3)
+            draw.line([(left_m, curr_y), (line_right, curr_y)], fill=primary_rgb, width=2)
 
-        curr_y += 16
+        curr_y += 14
 
-    # Helper for wrapped text line drawing (Large BOLD Crisp Text)
-    def draw_wrapped_text(text_str, prefix="", font_to_use=body_font, text_color="#1E293B", indent=0, max_width_chars=60):
+    # Helper for wrapped text line drawing (Bold High-Contrast Text)
+    def draw_wrapped_text(text_str, prefix="", font_to_use=body_font, text_color="#0F172A", indent=0, max_width_chars=60):
         nonlocal curr_y
         words = text_str.split()
         if not words:
@@ -242,18 +245,18 @@ def generate_template_preview_image(template_info: dict, resume_data: dict = Non
             test_line = line + " " + w if line else w
             if len(test_line) > max_width_chars:
                 draw.text((left_m + indent, curr_y), line, fill=text_color, font=font_to_use)
-                curr_y += 24
+                curr_y += 22
                 line = "    " + w
             else:
                 line = test_line
         if line:
             draw.text((left_m + indent, curr_y), line, fill=text_color, font=font_to_use)
-            curr_y += 24
+            curr_y += 22
 
     # 1. Summary
     draw_section_header("PROFESSIONAL SUMMARY")
-    draw_wrapped_text(summary, font_to_use=body_font, text_color="#1E293B", max_width_chars=52 if layout == "sidebar_column" else 72)
-    curr_y += 12
+    draw_wrapped_text(summary, font_to_use=body_font, text_color="#0F172A", max_width_chars=40 if layout == "sidebar_column" else 64)
+    curr_y += 10
 
     # 2. Experience
     draw_section_header("WORK EXPERIENCE")
@@ -262,13 +265,23 @@ def generate_template_preview_image(template_info: dict, resume_data: dict = Non
         company = exp.get("company", "")
         dates = f"{exp.get('start_date', '')} - {exp.get('end_date', 'Present')}"
         
-        draw.text((left_m, curr_y), f"{role} — {company}", fill="#0F172A", font=item_title_font)
+        # Role & Company title
+        title_str = f"{role} — {company}"
+        draw.text((left_m, curr_y), title_str, fill="#0F172A", font=item_title_font)
+        
+        # Right-aligned dates with guaranteed zero collision
         if layout != "sidebar_column":
-            draw.text((width - 240, curr_y), dates, fill="#64748B", font=body_font)
-        curr_y += 26
+            try:
+                date_bbox = draw.textbbox((0, 0), dates, font=body_font)
+                date_w = date_bbox[2] - date_bbox[0]
+            except Exception:
+                date_w = 130
+            draw.text((width - right_m - date_w, curr_y), dates, fill="#475569", font=body_font)
+            
+        curr_y += 25
 
         for bullet in exp.get("bullet_points", []):
-            draw_wrapped_text(bullet, prefix="•  ", font_to_use=body_font, text_color="#334155", indent=16, max_width_chars=48 if layout == "sidebar_column" else 68)
+            draw_wrapped_text(bullet, prefix="•  ", font_to_use=body_font, text_color="#1E293B", indent=14, max_width_chars=38 if layout == "sidebar_column" else 60)
         curr_y += 8
 
     # 3. Projects
@@ -278,10 +291,10 @@ def generate_template_preview_image(template_info: dict, resume_data: dict = Non
         tech = proj.get("technologies", "")
         proj_header = f"{title}" + (f" [{tech}]" if tech else "")
         draw.text((left_m, curr_y), proj_header, fill="#0F172A", font=item_title_font)
-        curr_y += 26
+        curr_y += 25
 
         for bullet in proj.get("bullet_points", []):
-            draw_wrapped_text(bullet, prefix="•  ", font_to_use=body_font, text_color="#334155", indent=16, max_width_chars=48 if layout == "sidebar_column" else 68)
+            draw_wrapped_text(bullet, prefix="•  ", font_to_use=body_font, text_color="#1E293B", indent=14, max_width_chars=38 if layout == "sidebar_column" else 60)
         curr_y += 8
 
     # 4. Education
@@ -292,14 +305,21 @@ def generate_template_preview_image(template_info: dict, resume_data: dict = Non
         yrs = f"{edu.get('start_year', '')} - {edu.get('end_year', '')}"
         draw.text((left_m, curr_y), f"{deg} — {inst}", fill="#0F172A", font=item_title_font)
         if layout != "sidebar_column":
-            draw.text((width - 220, curr_y), yrs, fill="#64748B", font=body_font)
-        curr_y += 28
+            try:
+                yrs_bbox = draw.textbbox((0, 0), yrs, font=body_font)
+                yrs_w = yrs_bbox[2] - yrs_bbox[0]
+            except Exception:
+                yrs_w = 100
+            draw.text((width - right_m - yrs_w, curr_y), yrs, fill="#475569", font=body_font)
+        curr_y += 26
 
     # Footer Bar
-    draw.rectangle([0, height - 40, width, height], fill="#F8FAFC")
-    draw.text((50, height - 28), f"NextHire AI Large Format  |  Template: {template_info.get('name')}  |  Layout: {layout.replace('_', ' ').title()}", fill="#475569", font=small_font)
+    draw.rectangle([0, height - 36, width, height], fill="#F8FAFC")
+    draw.text((45, height - 25), f"NextHire AI Resume Preview  |  Template: {template_info.get('name')}  |  Layout: {layout.replace('_', ' ').title()}", fill="#475569", font=small_font)
 
     buf = io.BytesIO()
-    img.save(buf, format="PNG", quality=98)
+    img.save(buf, format="PNG", quality=95)
     buf.seek(0)
     return buf.getvalue()
+
+

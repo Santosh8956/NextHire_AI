@@ -48,9 +48,10 @@ st.set_page_config(
 )
 
 
-# Global CSS Loader
+# Global CSS & Meta Loader
 def load_css():
-    """Loads custom CSS stylesheet if present."""
+    """Loads custom CSS stylesheet and Google verification metadata."""
+    st.markdown('<meta name="google-site-verification" content="google0e683cf8cc1c7756" />', unsafe_allow_html=True)
     css_path = Path(__file__).parent / "styles" / "custom.css"
     if css_path.exists():
         with open(css_path, "r", encoding="utf-8") as css:
