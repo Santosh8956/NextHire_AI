@@ -332,10 +332,13 @@ def generate_template_preview_image(template_info: dict, resume_data: dict = Non
 
     # Footer Bar
     draw.rectangle([0, _i(height - 44), width, height], fill="#F8FAFC")
-    draw.text((_i(45), _i(height - 32)), f"NextHire AI Resume Preview  |  Template: {template_info.get('name')}  |  Layout: {layout.replace('_', ' ').title()}", fill="#334155", font=small_font)
+    draw.text((_i(45), _i(height - 32)), f"NextHire AI Preview  |  Template: {template_info.get('name')}  |  Layout: {layout.replace('_', ' ').title()}", fill="#334155", font=small_font)
+
+    # Crop to top 580px section to make text DIRECTLY HUGE, BOLD & SUPER READABLE on gallery cards
+    card_crop = img.crop((0, 0, width, 580))
 
     buf = io.BytesIO()
-    img.save(buf, format="PNG", quality=95)
+    card_crop.save(buf, format="PNG", quality=98)
     buf.seek(0)
     return buf.getvalue()
 
