@@ -60,14 +60,11 @@ def load_css():
         <style>
             .stApp {
                 background-color: #F8FAFC !important;
-                color: #0F172A !important;
+                color: #0F172A;
             }
             [data-testid="stSidebar"] {
                 background-color: #FFFFFF !important;
                 border-right: 1px solid #E2E8F0 !important;
-            }
-            .stMarkdown p, .stMarkdown span, .stMarkdown label, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5 {
-                color: #0F172A !important;
             }
             [data-testid="stMetricValue"] {
                 color: #2563EB !important;
@@ -80,6 +77,11 @@ def load_css():
                 color: #0F172A !important;
                 border-color: #CBD5E1 !important;
             }
+            .stButton > button[kind="secondary"] {
+                background-color: #FFFFFF !important;
+                color: #0F172A !important;
+                border: 1.5px solid #CBD5E1 !important;
+            }
         </style>
         """
     else:
@@ -87,14 +89,11 @@ def load_css():
         <style>
             .stApp {
                 background-color: #0F172A !important;
-                color: #F8FAFC !important;
+                color: #F8FAFC;
             }
             [data-testid="stSidebar"] {
                 background-color: #1E293B !important;
                 border-right: 1px solid #334155 !important;
-            }
-            .stMarkdown p, .stMarkdown span, .stMarkdown label, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5 {
-                color: #F8FAFC !important;
             }
             [data-testid="stMetricValue"] {
                 color: #60A5FA !important;
@@ -106,6 +105,11 @@ def load_css():
                 background-color: #1E293B !important;
                 color: #F8FAFC !important;
                 border-color: #334155 !important;
+            }
+            .stButton > button[kind="secondary"] {
+                background-color: #1E293B !important;
+                color: #F8FAFC !important;
+                border: 1.5px solid #334155 !important;
             }
         </style>
         """

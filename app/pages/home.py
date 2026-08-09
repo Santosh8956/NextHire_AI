@@ -54,49 +54,73 @@ def show_home():
             """
         )
 
-        # Feature Highlights Grid (Fixed height & box alignment)
+        # Theme-aware styles for feature highlight cards
+        theme_mode = st.session_state.get("theme_mode", "dark")
+        is_dark = (theme_mode == "dark")
+
+        c1_bg = "#1E293B" if is_dark else "#F0F9FF"
+        c1_border = "#0284C7" if is_dark else "#BAE6FD"
+        c1_title = "#38BDF8" if is_dark else "#0369A1"
+        c1_sub = "#94A3B8" if is_dark else "#334155"
+
+        c2_bg = "#1E293B" if is_dark else "#FAF5FF"
+        c2_border = "#9333EA" if is_dark else "#E9D5FF"
+        c2_title = "#C084FC" if is_dark else "#6B21A8"
+        c2_sub = "#94A3B8" if is_dark else "#334155"
+
+        c3_bg = "#1E293B" if is_dark else "#F0FDF4"
+        c3_border = "#16A34A" if is_dark else "#BBF7D0"
+        c3_title = "#4ADE80" if is_dark else "#15803D"
+        c3_sub = "#94A3B8" if is_dark else "#334155"
+
+        c4_bg = "#1E293B" if is_dark else "#FFF7ED"
+        c4_border = "#EA580C" if is_dark else "#FED7AA"
+        c4_title = "#FB923C" if is_dark else "#C2410C"
+        c4_sub = "#94A3B8" if is_dark else "#334155"
+
+        # Feature Highlights Grid
         f1, f2, f3, f4 = st.columns(4)
 
         with f1:
             render_html(
-                """
-                <div style='background: #F0F9FF; border: 1.5px solid #BAE6FD; border-left: 4px solid #0284C7; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
+                f"""
+                <div style='background: {c1_bg}; border: 1.5px solid {c1_border}; border-left: 4px solid {c1_title}; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
                     <div style='font-size: 1.8rem; margin-bottom: 6px;'>🎯</div>
-                    <h4 style='color: #0369A1; margin: 0 0 6px 0; font-size: 1.05rem;'>ATS Scoring Engine</h4>
-                    <p style='color: #334155; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Evaluate keyword coverage & ATS compatibility instantly.</p>
+                    <h4 style='color: {c1_title}; margin: 0 0 6px 0; font-size: 1.05rem;'>ATS Scoring Engine</h4>
+                    <p style='color: {c1_sub}; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Evaluate keyword coverage & ATS compatibility instantly.</p>
                 </div>
                 """
             )
 
         with f2:
             render_html(
-                """
-                <div style='background: #FAF5FF; border: 1.5px solid #E9D5FF; border-left: 4px solid #9333EA; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
+                f"""
+                <div style='background: {c2_bg}; border: 1.5px solid {c2_border}; border-left: 4px solid {c2_title}; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
                     <div style='font-size: 1.8rem; margin-bottom: 6px;'>🤖</div>
-                    <h4 style='color: #6B21A8; margin: 0 0 6px 0; font-size: 1.05rem;'>AI Content Polish</h4>
-                    <p style='color: #334155; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Enhance bullet points with action verbs & performance metrics.</p>
+                    <h4 style='color: {c2_title}; margin: 0 0 6px 0; font-size: 1.05rem;'>AI Content Polish</h4>
+                    <p style='color: {c2_sub}; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Enhance bullet points with action verbs & performance metrics.</p>
                 </div>
                 """
             )
 
         with f3:
             render_html(
-                """
-                <div style='background: #F0FDF4; border: 1.5px solid #BBF7D0; border-left: 4px solid #16A34A; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
+                f"""
+                <div style='background: {c3_bg}; border: 1.5px solid {c3_border}; border-left: 4px solid {c3_title}; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
                     <div style='font-size: 1.8rem; margin-bottom: 6px;'>🎨</div>
-                    <h4 style='color: #15803D; margin: 0 0 6px 0; font-size: 1.05rem;'>Signature HD Templates</h4>
-                    <p style='color: #334155; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Classified designs across ATS, Modern, Tech & Executive layouts.</p>
+                    <h4 style='color: {c3_title}; margin: 0 0 6px 0; font-size: 1.05rem;'>Signature HD Templates</h4>
+                    <p style='color: {c3_sub}; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Classified designs across ATS, Modern, Tech & Executive layouts.</p>
                 </div>
                 """
             )
 
         with f4:
             render_html(
-                """
-                <div style='background: #FFF7ED; border: 1.5px solid #FED7AA; border-left: 4px solid #EA580C; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
+                f"""
+                <div style='background: {c4_bg}; border: 1.5px solid {c4_border}; border-left: 4px solid {c4_title}; border-radius: 14px; padding: 20px 16px; min-height: 195px; height: 100%; box-sizing: border-box;'>
                     <div style='font-size: 1.8rem; margin-bottom: 6px;'>📥</div>
-                    <h4 style='color: #C2410C; margin: 0 0 6px 0; font-size: 1.05rem;'>Instant PDF Export</h4>
-                    <p style='color: #334155; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Publication-ready vector PDF document export in 1-click.</p>
+                    <h4 style='color: {c4_title}; margin: 0 0 6px 0; font-size: 1.05rem;'>Instant PDF Export</h4>
+                    <p style='color: {c4_sub}; font-size: 0.83rem; margin: 0; line-height: 1.45;'>Publication-ready vector PDF document export in 1-click.</p>
                 </div>
                 """
             )
@@ -343,14 +367,18 @@ def show_home():
         st.markdown("### ⚡ Quick Feature Redirections")
         st.caption("Click any feature card below to navigate directly:")
 
+        grid_card_bg = "#1E293B" if is_dark else "#FFFFFF"
+        grid_card_border = "#334155" if is_dark else "#E2E8F0"
+        grid_body_sub = "#94A3B8" if is_dark else "#64748B"
+
         grid1, grid2, grid3 = st.columns(3)
 
         with grid1:
             render_html(
-                """
-                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
-                    <h4 style='color: #1E3A8A; margin: 0 0 6px 0;'>📊 ATS Score & Analysis</h4>
-                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Evaluate ATS compatibility score, formatting checks & missing keywords.</p>
+                f"""
+                <div style='background: {grid_card_bg}; border: 1.5px solid {grid_card_border}; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: {"#60A5FA" if is_dark else "#1E3A8A"}; margin: 0 0 6px 0;'>📊 ATS Score & Analysis</h4>
+                    <p style='color: {grid_body_sub}; font-size: 0.85rem; margin: 0;'>Evaluate ATS compatibility score, formatting checks & missing keywords.</p>
                 </div>
                 """
             )
@@ -361,10 +389,10 @@ def show_home():
 
         with grid2:
             render_html(
-                """
-                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
-                    <h4 style='color: #0D9488; margin: 0 0 6px 0;'>✍️ Content Editor & AI Polish</h4>
-                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Side-by-side live editor to enhance bullet points with action verbs.</p>
+                f"""
+                <div style='background: {grid_card_bg}; border: 1.5px solid {grid_card_border}; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: {"#2DD4BF" if is_dark else "#0D9488"}; margin: 0 0 6px 0;'>✍️ Content Editor & AI Polish</h4>
+                    <p style='color: {grid_body_sub}; font-size: 0.85rem; margin: 0;'>Side-by-side live editor to enhance bullet points with action verbs.</p>
                 </div>
                 """
             )
@@ -375,10 +403,10 @@ def show_home():
 
         with grid3:
             render_html(
-                """
-                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
-                    <h4 style='color: #7C3AED; margin: 0 0 6px 0;'>🎨 Signature Template Gallery</h4>
-                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Browse high-resolution preview cards across classified template styles.</p>
+                f"""
+                <div style='background: {grid_card_bg}; border: 1.5px solid {grid_card_border}; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: {"#C084FC" if is_dark else "#7C3AED"}; margin: 0 0 6px 0;'>🎨 Signature Template Gallery</h4>
+                    <p style='color: {grid_body_sub}; font-size: 0.85rem; margin: 0;'>Browse high-resolution preview cards across classified template styles.</p>
                 </div>
                 """
             )
@@ -392,10 +420,10 @@ def show_home():
 
         with grid4:
             render_html(
-                """
-                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
-                    <h4 style='color: #2563EB; margin: 0 0 6px 0;'>📝 Resume Workspace</h4>
-                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Clean workspace sections: Personal, Education, Skills, Projects, Experience.</p>
+                f"""
+                <div style='background: {grid_card_bg}; border: 1.5px solid {grid_card_border}; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: {"#38BDF8" if is_dark else "#2563EB"}; margin: 0 0 6px 0;'>📝 Resume Workspace</h4>
+                    <p style='color: {grid_body_sub}; font-size: 0.85rem; margin: 0;'>Clean workspace sections: Personal, Education, Skills, Projects, Experience.</p>
                 </div>
                 """
             )
@@ -406,10 +434,10 @@ def show_home():
 
         with grid5:
             render_html(
-                """
-                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
-                    <h4 style='color: #D97706; margin: 0 0 6px 0;'>🎯 Target Job Personalization</h4>
-                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Customize target job role, company name, and job posting requirements.</p>
+                f"""
+                <div style='background: {grid_card_bg}; border: 1.5px solid {grid_card_border}; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: {"#FBBF24" if is_dark else "#D97706"}; margin: 0 0 6px 0;'>🎯 Target Job Personalization</h4>
+                    <p style='color: {grid_body_sub}; font-size: 0.85rem; margin: 0;'>Customize target job role, company name, and job posting requirements.</p>
                 </div>
                 """
             )
@@ -420,10 +448,10 @@ def show_home():
 
         with grid6:
             render_html(
-                """
-                <div style='background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;'>
-                    <h4 style='color: #059669; margin: 0 0 6px 0;'>📥 Export PDF Resume</h4>
-                    <p style='color: #64748B; font-size: 0.85rem; margin: 0;'>Inspect final high-resolution document preview and download ATS PDF.</p>
+                f"""
+                <div style='background: {grid_card_bg}; border: 1.5px solid {grid_card_border}; border-radius: 12px; padding: 18px;'>
+                    <h4 style='color: {"#34D399" if is_dark else "#059669"}; margin: 0 0 6px 0;'>📥 Export PDF Resume</h4>
+                    <p style='color: {grid_body_sub}; font-size: 0.85rem; margin: 0;'>Inspect final high-resolution document preview and download ATS PDF.</p>
                 </div>
                 """
             )
@@ -436,9 +464,9 @@ def show_home():
     st.divider()
 
     render_html(
-        """
-        <div style='text-align: center; color: #64748B; font-size: 0.88rem;'>
-            NextHire AI — Designed & Developed by <b>Santosh Kumar Kolagani</b> (Academic Major Project)
+        f"""
+        <div style='text-align: center; color: {"#94A3B8" if is_dark else "#64748B"}; font-size: 0.88rem;'>
+            NextHire AI Resume Builder & ATS Platform • Developed by <b>Santosh Kumar Kolagani</b>
         </div>
         """
     )
