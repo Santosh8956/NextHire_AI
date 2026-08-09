@@ -12,10 +12,7 @@ Purpose:
 
 import streamlit as st
 from app.components.navbar import render_navbar
-from app.config.constants import SAMPLE_RESUME_DATA
-from app.config.settings import get_api_key
-from app.utils.helpers import render_html
-import google.generativeai as genai
+from app.services.parser.resume_parser import extract_text_from_pdf, parse_resume_content
 
 
 COMPANY_KNOWLEDGE = {
@@ -58,25 +55,37 @@ def _generate_company_insights(company: str, role: str, api_key: str) -> str:
 
 
 def show_personalization():
-    """Renders Screen 5 – Personalization redirecting directly to Template Gallery."""
+    """Renders Screen 5 – Personalization supporting both fresh creation and PDF/TXT upload."""
     render_navbar()
 
-    # Guard check: If General Resume was selected, skip automatically to workspace
-    if st.session_state.get("resume_type_choice") == "General Resume":
-        st.session_state["current_page"] = "data_collection"
-        st.rerun()
+    theme_mode = st.session_state.get("theme_mode", "dark")
+    is_dark = (theme_mode == "dark")
+
+    # Mode Check & Switcher
+    curr_choice = st.session_state.get("resume_type_choice", "Personalized Resume")
+    if curr_choice == "General Resume":
+        st.session_state["resume_type_choice"] = "Personalized Resume"
 
     col1, col2, col3 = st.columns([1, 2.8, 1])
 
     with col2:
-        render_html(
-            """
-            <div style='text-align: center; margin-bottom: 25px;'>
-                <h1 style='color: #1E3A8A; font-size: 2.2rem; font-weight: 700;'>🎯 Target Job Personalization</h1>
-                <p style='color: #64748B; font-size: 1.05rem;'>Provide your target job role & company details. AI will customize keywords and bullet points using company intelligence.</p>
-            </div>
-            """
-        )
+        c_pers_hdr, c_pers_sw = st.columns([3, 1.2])
+        with c_pers_hdr:
+            render_html(
+                f"""
+                <div style='text-align: left; margin-bottom: 20px;'>
+                    <h1 style='color: {"#60A5FA" if is_dark else "#1E3A8A"}; font-size: 2.1rem; font-weight: 700; margin: 0 0 6px 0;'>🎯 Target Job Personalization</h1>
+                    <p style='color: {"#94A3B8" if is_dark else "#64748B"}; font-size: 0.98rem; margin: 0;'>Provide target job role & company parameters for maximum ATS keyword match.</p>
+                </div>
+                """
+            )
+        with c_pers_sw:
+            st.write("")
+            if st.button("🔄 Switch to General", key="btn_pers_switch_gen", use_container_width=True):
+                st.session_state["resume_type_choice"] = "General Resume"
+                st.session_state["home_step"] = 3
+                st.session_state["current_page"] = "home"
+                st.rerun()
 
         if "resume_data" not in st.session_state or not st.session_state["resume_data"]:
             st.session_state["resume_data"] = SAMPLE_RESUME_DATA.copy()
@@ -116,10 +125,57 @@ def show_personalization():
         job_desc = st.text_area(
             "Job Description & Target ATS Keywords",
             value=job_target.get("job_description", ""),
-            height=180,
+            height=160,
             placeholder="Paste job posting details or click the button above to auto-generate target company keywords...",
             key="pers_desc_textarea"
         )
+
+        st.write("")
+        st.divider()
+
+        # ---------------------------------------------------------
+        # UPLOAD EXISTING RESUME (PDF/TXT) OPTION IN PERSONALIZATION
+        # ---------------------------------------------------------
+        render_html(
+            f"""
+            <div style='background: {"#1E293B" if is_dark else "#F0FDF4"}; border: 1.5px solid {"#16A34A" if is_dark else "#BBF7D0"}; border-radius: 12px; padding: 18px; margin-bottom: 15px;'>
+                <h4 style='color: {"#4ADE80" if is_dark else "#15803D"}; margin: 0 0 6px 0;'>📄 Upload Existing Resume PDF/TXT for Target Tailoring</h4>
+                <p style='color: {"#CBD5E1" if is_dark else "#334155"}; font-size: 0.88rem; margin: 0;'>Optional: Upload your current resume file to parse details while applying target job parameters.</p>
+            </div>
+            """
+        )
+
+        uploaded_pers_pdf = st.file_uploader("Upload Existing Resume File (PDF/TXT):", type=["pdf", "txt"], key="pers_pdf_upload")
+        if uploaded_pers_pdf is not None:
+            file_bytes = uploaded_pers_pdf.read()
+            if uploaded_pers_pdf.name.endswith(".pdf"):
+                extracted_text = extract_text_from_pdf(file_bytes)
+            else:
+                extracted_text = file_bytes.decode("utf-8", errors="ignore")
+
+            if extracted_text:
+                parsed_data = parse_resume_content(extracted_text)
+                parsed_data["job_target"] = {
+                    "job_title": target_role.strip() if target_role.strip() else "Software Developer",
+                    "company_name": target_company.strip(),
+                    "job_description": job_desc.strip(),
+                    "personalized_mode": True
+                }
+                st.session_state["resume_data"] = parsed_data
+                st.session_state["pers_resume_parsed"] = True
+                st.success("🎉 Existing resume uploaded & target parameters applied!")
+
+        if st.session_state.get("pers_resume_parsed"):
+            c_p_def, c_p_sel = st.columns(2)
+            with c_p_def:
+                if st.button("📄 Continue with Default Template", use_container_width=True, key="btn_pers_tpl_default"):
+                    st.session_state["selected_template"] = "ats_1"
+                    st.session_state["current_page"] = "data_collection"
+                    st.rerun()
+            with c_p_sel:
+                if st.button("🎨 Select New Template", type="primary", use_container_width=True, key="btn_pers_tpl_select"):
+                    st.session_state["current_page"] = "template_selection"
+                    st.rerun()
 
         st.write("")
         st.divider()
@@ -133,19 +189,20 @@ def show_personalization():
                 st.rerun()
 
         with c_sk:
-            # REQUIREMENT: Skip button redirects directly to Template Gallery
             if st.button("⏭️ Skip Personalization", use_container_width=True, key="btn_pers_skip"):
                 job_target["job_title"] = job_target.get("job_title", "Software Developer")
+                job_target["personalized_mode"] = True
                 st.session_state["resume_data"] = resume
                 st.session_state["current_page"] = "template_selection"
                 st.rerun()
 
         with c_s:
-            # REQUIREMENT: Save & Continue redirects directly to Template Gallery
             if st.button("Save & Continue ➡️", type="primary", use_container_width=True, key="btn_pers_save"):
                 job_target["job_title"] = target_role if target_role.strip() else "Software Developer"
                 job_target["company_name"] = target_company.strip()
                 job_target["job_description"] = job_desc.strip()
+                job_target["personalized_mode"] = True
                 st.session_state["resume_data"] = resume
                 st.session_state["current_page"] = "template_selection"
+                st.rerun()
                 st.rerun()

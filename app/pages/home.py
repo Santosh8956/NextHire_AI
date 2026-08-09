@@ -274,25 +274,28 @@ def show_home():
     elif home_step == 4:
         rtype = st.session_state.get("resume_type_choice", "General Resume")
 
-        render_html(
-            f"""
-            <div style='background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
-                        border: 2px solid #3B82F6;
-                        border-radius: 16px;
-                        padding: 24px 28px;
-                        color: white;
-                        margin-bottom: 25px;'>
-                <div style='display: flex; justify-content: space-between; align-items: center;'>
-                    <div>
-                        <h2 style='margin: 0; color: #F8FAFC; font-size: 1.9rem;'>👋 Dashboard — Welcome, {user_name}!</h2>
-                        <p style='margin: 6px 0 0 0; color: #93C5FD; font-size: 1rem;'>
-                            Active Mode: <b>{rtype}</b> | Access all resume features & direct redirections below.
-                        </p>
-                    </div>
+        c_dash_hdr, c_dash_sw = st.columns([3.2, 1.2])
+        with c_dash_hdr:
+            render_html(
+                f"""
+                <div style='background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
+                            border: 2px solid #3B82F6;
+                            border-radius: 16px;
+                            padding: 22px 26px;
+                            color: white;
+                            margin-bottom: 20px;'>
+                    <h2 style='margin: 0; color: #F8FAFC; font-size: 1.8rem;'>👋 Dashboard — Welcome, {user_name}!</h2>
+                    <p style='margin: 6px 0 0 0; color: #93C5FD; font-size: 0.98rem;'>
+                        Active Resume Mode: <b style="color: #60A5FA;">{rtype}</b>
+                    </p>
                 </div>
-            </div>
-            """
-        )
+                """
+            )
+        with c_dash_sw:
+            st.write("")
+            if st.button("🔄 Switch Mode (Gen / Custom)", key="btn_dash_switch_mode", use_container_width=True):
+                st.session_state["home_step"] = 3
+                st.rerun()
 
         # Quick Action Row
         c_act1, c_act2 = st.columns(2)
